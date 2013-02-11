@@ -14,9 +14,7 @@
         "monolog/monolog": "1.0.*",
 		"twitter/bootstrap": "v2.3.0"
     },
-	{
     "autoload": {
         "psr-0": {"PHPQTI": "src/"}
     }
-}
 }
