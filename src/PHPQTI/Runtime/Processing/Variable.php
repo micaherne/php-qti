@@ -314,6 +314,7 @@ class Variable {
         $result = new Variable('single', 'boolean');
         if ($this->_isNull() || $subsequence->_isNull()) {
             $result->value = null;
+            return $result;
         } else {
             $result->value = false;
 
@@ -451,6 +452,11 @@ class Variable {
     public function match($othervariable) {
         $result = new Variable('single', 'boolean', array('value' => false));
 
+        if($this->_isNull() || $othervariable->_isNull) {
+        	$result->value = null;
+        	return;
+        }
+        
         // TODO: Is it OK just to let PHP decide if two values are equal?
         if (!is_array($this->value) && !(is_array($othervariable->value))) {
             $result->value = ($this->value == $othervariable->value);

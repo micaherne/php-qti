@@ -4,10 +4,10 @@ namespace PHPQTI\Runtime\Element;
 
 use PHPQTI\Runtime\Processing\Variable;
 
-class ResponseDeclaration extends VariableDeclaration {
+class TemplateDeclaration extends VariableDeclaration {
 	
 	public function setVariable($controller, $result) {
-		$controller->response[$this->attrs['identifier']] = $result;
+		$controller->template[$this->attrs['identifier']] = $result;
 	}
 	
 }

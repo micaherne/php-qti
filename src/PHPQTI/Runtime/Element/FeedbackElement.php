@@ -2,6 +2,8 @@
 
 namespace PHPQTI\Runtime\Element;
 
+use PHPQTI\Runtime\Processing\Variable;
+
 abstract class FeedbackElement extends Element {
 
     public function __invoke($controller) {
@@ -22,7 +24,7 @@ abstract class FeedbackElement extends Element {
         * the spec doesn't seem to mention this that I can find.
         *
         */
-        $testvar = new qti_variable('single', $variable->type, array('value' => $identifier));
+        $testvar = new Variable('single', $variable->type, array('value' => $identifier));
         if ($variable->cardinality == 'multiple') {
             $comparisonresult = $variable->contains($testvar);
         } else {

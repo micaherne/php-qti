@@ -28,7 +28,7 @@ class AssociateInteraction extends Element {
             } else if ($child instanceof SimpleAssociableChoice) {
                 $child->name = $variableName;
                 $this->simpleAssociableChoice[] = $child;
-                if($child->attrs['fixed'] === 'true') {
+                if(isset($child->attrs['fixed']) && $child->attrs['fixed'] === 'true') {
                     $this->fixed[] = count($this->simpleAssociableChoice) - 1;
                 }
             }

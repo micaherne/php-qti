@@ -57,6 +57,7 @@ class ItemController {
         $this->outcome['completionStatus'] = new Variable('single', 'identifier', array('value' => 'not_attempted'));
 
         // TODO: We have this to get around mistakes (?) in the example QTI - should we?
+        // (This is fixed in the final spec but should we leave it in?)
         $this->outcome['completion_status'] = $this->outcome['completionStatus'];
     }
 
