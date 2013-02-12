@@ -193,9 +193,9 @@ class Variable {
 
         // Null if no arguments passed
         if (count($params) == 0) {
-            return new able('multiple', 'identifier');
+            return new Variable('multiple', 'identifier');
         } else {
-            $result = new able('multiple', 'identifier', array('value' => array()));
+            $result = new Variable('multiple', 'identifier', array('value' => array()));
         }
 
         // Allow a single array as well as a parameter list
@@ -231,7 +231,7 @@ class Variable {
     */
     public static function ordered() {
         $params = func_get_args();
-        $result = forward_static_call_array('Variable::multiple', $params);
+        $result = forward_static_call_array('\PHPQTI\Runtime\Processing\Variable::multiple', $params);
         $result->cardinality = 'ordered';
         return $result;
     }
@@ -481,7 +481,7 @@ class Variable {
 
         if ($this->_isNull() || $othervariable->_isNull()) {
             $result->value = null;
-            return result;
+            return $result;
         }
 
         $string1 = $this->value;
