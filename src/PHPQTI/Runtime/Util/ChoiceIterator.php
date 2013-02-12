@@ -6,7 +6,7 @@ namespace PHPQTI\Runtime\Util;
  * An iterator which will iterate over an array of choices, taking into
  * account the shuffle and fixed attributes.
  */
-class ChoiceIterator implements Iterator {
+class ChoiceIterator implements \Iterator {
 
     protected $choices;
     protected $position = 0;

@@ -2,6 +2,6 @@
 
 namespace PHPQTI\Runtime\Processing;
 
-class ProcessingException extends Exception {
+class ProcessingException extends \Exception {
 
 }

@@ -19,6 +19,14 @@ class ItemController {
 
     // A unique identifier for the controller.
     public $identifier;
+    
+    // Generated functions
+    public $responseDeclaration = array();
+    public $outcomeDeclaration = array();
+    public $templateDeclaration = array();
+    public $itemBody = array(); // there can be only one
+    public $responseProcessing = array();
+    public $modalFeedback = array();
 
     public $response = array();
     public $outcome = array();
@@ -59,7 +67,6 @@ class ItemController {
         echo "<form method=\"post\" enctype=\"multipart/form-data\">";
         $resource_provider = $this->resource_provider;
         if(count($this->itemBody) > 0) {
-        	print_r($this->itemBody);
         	echo $this->itemBody[0]($this);
         }
         echo "<input type=\"submit\" value=\"Submit response\"/>";
@@ -114,6 +121,17 @@ class ItemController {
         }
         // 5.1.1 numAttempts increases at the start of the attempt
         $this->response['numAttempts']->value++;
+        
+        // Initialise all the declared variables
+        foreach($this->responseDeclaration as $key => $func) {
+            $func($this);
+        }
+        foreach($this->outcomeDeclaration as $key => $func) {
+            $func($this);
+        }
+        foreach($this->templateDeclaration as $key => $func) {
+            $func($this);
+        }
     }
 
     public function endAttempt() {
@@ -143,7 +161,9 @@ class ItemController {
     }
 
     public function processResponse() {
-        $this->response_processing->execute();
+        foreach($this->responseProcessing as $func) {
+            $func($this);
+        }
 
         if ($this->modal_feedback_processing) {
             echo $this->modal_feedback_processing->execute();

@@ -60,6 +60,7 @@ class Variable {
 
     // Implement mapResponse processing here because it's sensible!
     // TODO: Implement lower and upper bound
+    // TODO: Should probably be in the Processing\Mapping class instead
     public function mapResponse() {
         // TODO: Check mapping is defined here?
         if ($this->cardinality == 'single') {

@@ -33,22 +33,68 @@ class ItemCompiler {
         // Create a function generator
         $result .= "\$f = new PHPQTI\Runtime\FunctionGenerator();\n";
 
+        /*
+         * The generated functions do different things:
+         * 
+         * responseDeclaration, outcomeDeclaration, templateDeclaration:
+         * 
+         * These all create functions which will initialise the given variable
+         * when called.
+         * 
+         * templateProcessing:
+         * 
+         * Creates a function which will process the template variables
+         * 
+         * stylesheet:
+         * 
+         * Simply adds the stylesheet to the list of those that must be added to 
+         * the head of any page displaying the item.
+         * 
+         * itemBody:
+         * 
+         * Creates a function which will render the item as HTML based on the values
+         * of the variables at the time of calling.
+         * 
+         * responseProcessing:
+         * 
+         * Creates a function which processes the responses into outcomes.
+         * 
+         * modalFeedback:
+         * 
+         * Creates a function which returns an array of modal feedback HTML
+         * which should be shown to the user.
+         */
+        // TODO: Check the namespace and ignore non-QTI
+        // TODO: Move stylesheet code from above into this loop
         foreach($this->dom->documentElement->childNodes as $child) {
         	$nodeName = $child->nodeName;
         	if ($nodeName == 'stylesheet') {
         		continue;
         	}
         	
-        	$functioncode = $this->generating_function($child, '$f');
+        	$functioncode = null;
+        	if ($child->nodeName == 'responseProcessing' && !is_null($child->attributes->getNamedItem('template'))) {
+        	    $template = $child->attributes->getNamedItem('template');
+        	    if (strpos($template->value, "http://www.imsglobal.org/question/qti_v2p1/rptemplates/") === 0) {
+        	        $template = str_replace("http://www.imsglobal.org/question/qti_v2p1/rptemplates/", '', $template->value);
+        	        $dom = new \DOMDocument();
+        	        $template_location = 'http://www.imsglobal.org/question/qti_v2p1/rptemplates/'.$template. '.xml';
+        	        $dom->load($template_location);
+        	        $functioncode = $this->generating_function($dom->documentElement, '$f');
+        	    }
+        	} else {
+            	$functioncode = $this->generating_function($child, '$f');
+        	}
+        	
         	if (!is_null($functioncode)) {
-        		if (!is_null($attr = $child->attributes->getNamedItem('identifier'))) {
-        			$identifier = "'{$attr->value}'";
-        		} else {
-        			$identifier = '';
-        		}
-        		$result .= '$this->' . $nodeName . '[' . $identifier . '] = ';
-	        	$result .= $functioncode;
-	        	$result .= ";\n";
+        	    if (!is_null($attr = $child->attributes->getNamedItem('identifier'))) {
+        	        $identifier = "'{$attr->value}'";
+        	    } else {
+        	        $identifier = '';
+        	    }
+        	    $result .= '$this->' . $nodeName . '[' . $identifier . '] = ';
+        	    $result .= $functioncode;
+        	    $result .= ";\n";
         	}
         }
         

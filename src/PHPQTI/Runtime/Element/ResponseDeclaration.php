@@ -11,6 +11,10 @@ class ResponseDeclaration extends Element {
 		foreach($this->children as $child) {
 			if($child instanceof CorrectResponse) {
 					$result->correctResponse = $child($controller);
+			} else if ($child instanceof Mapping) {
+			    $result->mapping = $child($controller);
+			} else if ($child instanceof AreaMapping) {
+			    $result->areaMapping = $child($controller);
 			}
 		}
 		$controller->response[$this->attrs['identifier']] = $result;

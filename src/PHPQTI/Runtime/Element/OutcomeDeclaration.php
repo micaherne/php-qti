@@ -4,6 +4,7 @@ namespace PHPQTI\Runtime\Element;
 
 use PHPQTI\Runtime\Processing\Variable;
 
+// TODO: Implement attributes and lookupTable
 class OutcomeDeclaration extends Element {
 	
 	public function __invoke($controller) {
