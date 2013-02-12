@@ -15,7 +15,6 @@ class HttpResponseSource implements ResponseSource {
      */
 
     public function bindVariable($name, Variable &$variable) {
-        print_r($variable);
         switch ($variable->cardinality) {
             case 'single':
                 if( $submittedvalue = $this->get($name)) {

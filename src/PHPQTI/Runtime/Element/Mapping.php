@@ -8,7 +8,7 @@ class Mapping extends Element {
 	    $mapping = new \PHPQTI\Runtime\Processing\Mapping();
         foreach($this->children as $child) { // only mapEntry elements allowed
             $attrs = $child->__invoke($controller); // just the attributes array
-            $mapping->entries[$attrs['mapKey']] = $attrs['mappedValue'];
+            $mapping->mapEntry[$attrs['mapKey']] = $attrs['mappedValue'];
             if (isset($attrs['caseSensitive']) && $attrs['caseSensitive']) {
                 $mapping->caseSensitive[$attrs['mapKey']] = true;
             } else {

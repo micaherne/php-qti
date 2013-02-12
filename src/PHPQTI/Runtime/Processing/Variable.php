@@ -9,8 +9,8 @@ class Variable {
     // For response vars, QTI has a candidateResponse wrapper for the value - any reason to implement?
     public $value;
     public $correctResponse;
-    public $defaultValue;
-    public $mapping;
+    public $defaultValue = null;
+    public $mapping = null;
 
     /**
      * Create a qti variable
@@ -62,28 +62,30 @@ class Variable {
     // TODO: Implement lower and upper bound
     // TODO: Should probably be in the Processing\Mapping class instead
     public function mapResponse() {
-        // TODO: Check mapping is defined here?
+        if (is_null($this->mapping)) {
+        	throw new ProcessingException('Mapping required for mapResponse()');
+        }
         if ($this->cardinality == 'single') {
-            if (array_key_exists($this->value, $this->mapping['mapEntry'])) {
-                $value = $this->mapping['mapEntry'][$this->value];
+            if (array_key_exists($this->value, $this->mapping->mapEntry)) {
+                $value = $this->mapping->mapEntry[$this->value];
             } else {
-                $value = $this->mapping['defaultValue'];
+                $value = $this->mapping->defaultValue;
             }
         } else {
             $value = 0;
             // array_unique used because values should only be counted once - see mapResponse documentation
             foreach(array_unique($this->value) as $response) {
-                if (array_key_exists($response, $this->mapping['mapEntry'])) {
-                    $value += $this->mapping['mapEntry'][$response];
+                if (array_key_exists($response, $this->mapping->mapEntry)) {
+                    $value += $this->mapping->mapEntry[$response];
                 } else if ($this->type == 'pair') {  // Check pair opposite way round
                     $responseReversed = implode(' ', array_reverse(explode(' ', $response)));
-                    if (array_key_exists($responseReversed, $this->mapping['mapEntry'])) {
-                        $value += $this->mapping['mapEntry'][$responseReversed];
+                    if (array_key_exists($responseReversed, $this->mapping->mapEntry)) {
+                        $value += $this->mapping->mapEntry[$responseReversed];
                     } else {
-                        $value += $this->mapping['defaultValue'];
+                        $value += $this->mapping->defaultValue;
                     }
                 } else {
-                    $value += $this->mapping['defaultValue'];
+                    $value += $this->mapping->defaultValue;
                 }
 
             }
@@ -284,7 +286,7 @@ class Variable {
         if ($this->_isNull() || count($this->value) == 0) {
             $result->value = null;
         } else {
-            $result->value = $this->value[mt_rand(0, count($this->value))];
+            $result->value = $this->value[mt_rand(0, count($this->value) - 1)];
         }
         return $result;
     }

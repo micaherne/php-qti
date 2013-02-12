@@ -13,7 +13,7 @@ class Mapping {
     public $lowerBound = null;
     public $upperBound = null;
     public $defaultValue = 0;
-    public $entries = array();
+    public $mapEntry = array();
     public $caseSensitive = array();
     
 }

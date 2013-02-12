@@ -33,7 +33,7 @@ class ItemCompilerTest extends PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf('PHPQTI\Runtime\Processing\Variable', $controller1->response['RESPONSE']);
 		$correctResponse1 = $controller1->response['RESPONSE']->getCorrectResponse();
 		$this->assertInstanceOf('PHPQTI\Runtime\Processing\Variable', $correctResponse1);
-		$this->assertEquals(array('ChoiceA'), $correctResponse1->getValue());
+		$this->assertEquals('ChoiceA', $correctResponse1->getValue());
 	}
 	
 	public function testOutcomeDeclaration() {
@@ -72,8 +72,8 @@ class ItemCompilerTest extends PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf('PHPQTI\Runtime\Processing\Variable', $controller1->response['RESPONSE']);
 		$this->assertEquals('directedPair', $controller1->response['RESPONSE']->type);
 		$this->assertNotNull($controller1->response['RESPONSE']->mapping);
-		$this->assertEquals('1', $controller1->response['RESPONSE']->mapping->entries['C R']);
-		$this->assertEquals('0.5', $controller1->response['RESPONSE']->mapping->entries['L M']);
+		$this->assertEquals('1', $controller1->response['RESPONSE']->mapping->mapEntry['C R']);
+		$this->assertEquals('0.5', $controller1->response['RESPONSE']->mapping->mapEntry['L M']);
 		$this->assertEquals('0', $controller1->response['RESPONSE']->mapping->defaultValue);
 	}
 	
