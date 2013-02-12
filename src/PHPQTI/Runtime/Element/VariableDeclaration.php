@@ -16,6 +16,14 @@ abstract class VariableDeclaration extends Element {
 				} else {
 					$result->correctResponse = $child($controller);
 				}
+			} else if ($child instanceof DefaultValue) {
+				// defaultValue is an array only if cardinality is not single
+				if($this->attrs['cardinality'] == 'single') {
+					$result->defaultValue = $child($controller)[0];
+				} else {
+					$result->defaultValue = $child($controller);
+				}
+				
 			} else if ($child instanceof Mapping) {
 			    $result->mapping = $child($controller);
 			} else if ($child instanceof AreaMapping) {

@@ -452,7 +452,7 @@ class Variable {
     public function match($othervariable) {
         $result = new Variable('single', 'boolean', array('value' => false));
 
-        if($this->_isNull() || $othervariable->_isNull) {
+        if($this->_isNull() || $othervariable->_isNull()) {
         	$result->value = null;
         	return;
         }

@@ -48,7 +48,7 @@ class ItemCompilerTest extends PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf('PHPQTI\Runtime\Processing\Variable', $controller1->outcome['SCORE']);
 		$defaultValue1 = $controller1->outcome['SCORE']->getDefaultValue();
 		$this->assertInstanceOf('PHPQTI\Runtime\Processing\Variable', $defaultValue1);
-		$this->assertEquals(array('0'), $defaultValue1->getValue());
+		$this->assertEquals('0', $defaultValue1->getValue());
 	}
 	
 	public function testResponseDeclarationWithMapping() {
