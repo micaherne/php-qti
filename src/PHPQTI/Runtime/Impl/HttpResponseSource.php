@@ -3,6 +3,7 @@
 namespace PHPQTI\Runtime\Impl;
 
 use PHPQTI\Runtime\Processing\Variable;
+use PHPQTI\Runtime\ResponseSource;
 
 // TODO: Support file upload
 class HttpResponseSource implements ResponseSource {

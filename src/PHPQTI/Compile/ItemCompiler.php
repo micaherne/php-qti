@@ -29,9 +29,33 @@ class ItemCompiler {
                 $result .= '$this->stylesheets[] = "' . $attr->value . "\";\n";
             }
         }
+        
+        // Create a function generator
+        $result .= "\$f = new PHPQTI\Runtime\FunctionGenerator();\n";
 
+        foreach($this->dom->documentElement->childNodes as $child) {
+        	$nodeName = $child->nodeName;
+        	if ($nodeName == 'stylesheet') {
+        		continue;
+        	}
+        	
+        	$functioncode = $this->generating_function($child, '$f');
+        	if (!is_null($functioncode)) {
+        		if (!is_null($attr = $child->attributes->getNamedItem('identifier'))) {
+        			$identifier = "'{$attr->value}'";
+        		} else {
+        			$identifier = '';
+        		}
+        		$result .= '$this->' . $nodeName . '[' . $identifier . '] = ';
+	        	$result .= $functioncode;
+	        	$result .= ";\n";
+        	}
+        }
+        
+        $result .= '}}';
+        return $result;
         // Create the itemBody generator function
-        $result .= '$p = new qti_item_body($this);' . "\n";
+        //$result .= '$p = new qti_item_body($this);' . "\n";
 
         $itemBodyTags = $this->dom->getElementsByTagNameNS ('http://www.imsglobal.org/xsd/imsqti_v2p1', 'itemBody');
         foreach($itemBodyTags as $node) {

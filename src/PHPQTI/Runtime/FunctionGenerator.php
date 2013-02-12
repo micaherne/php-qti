@@ -73,6 +73,23 @@ class FunctionGenerator {
             return $result;
         };
     }
+    
+    public static function __basicElement($name, $attrs, $children) {
+    	$result = "<$name";
+    	if(!empty($attrs)) {
+    		foreach($attrs as $key => $value) {
+    			$result .= " $key=\"$value\"";
+    		}
+    	}
+    	$result .= ">";
+    	if(!empty($children)) {
+    		foreach($children as $child) {
+    			$result .= $child->__invoke($controller);
+    		}
+    	}
+    	$result .= "</$name>";
+    	return $result;
+    }
 
     public static function __text($text) {
         return function($controller) use ($text) {
@@ -87,7 +104,7 @@ class FunctionGenerator {
             if(isset($attrs['src'])) {
                 $attrs['src'] = $controller->resource_provider->urlFor($attrs['src']);
             }
-            return qti_item_body::__basicElement('img', $attrs, $args);
+            return FunctionGenerator::__basicElement('img', $attrs, $args);
         };
     }
     
@@ -96,12 +113,12 @@ class FunctionGenerator {
             if(isset($attrs['data'])) {
                 $attrs['data'] = $controller->resource_provider->urlFor($attrs['data']);
             }
-            return qti_item_body::__basicElement('object', $attrs, $args);
+            return FunctionGenerator::__basicElement('object', $attrs, $args);
         };
     }
 
     public function _itemBody($attrs, $children) {
-        $this->displayFunction = function($controller) use($children) {
+        return function($controller) use($children) {
             $result = "<div";
             if(!empty($attrs)) { // add stuff like "class" attribute
                 foreach($attrs as $key => $value) {
@@ -116,7 +133,7 @@ class FunctionGenerator {
             return $result;
         };
     }
-    
+        
     // Basic printedVariable function
     // TODO: Make work for non-string types
     // TODO: Support format and base attributes

@@ -4,7 +4,7 @@ namespace PHPQTI\Runtime\Element;
 
 use PHPQTI\Runtime\Util\ChoiceIterator;
 
-class qti_choiceInteraction extends qti_element {
+class ChoiceInteraction extends Element {
 
     /* TODO: We'd really like to tell the simpleChoice elements what type of
      * input control they're to display in the constructor, but we don't have access to the
@@ -22,7 +22,7 @@ class qti_choiceInteraction extends qti_element {
         $result .= ">";
         // Work out what kind of HTML tag will be used for simpleChoices
         if (!isset($controller->response[$variableName])) {
-            throw new Exception("Declaration for $variableName not found");
+            throw new \Exception("Declaration for $variableName not found");
         }
 
         $responseVariable = $controller->response[$variableName];

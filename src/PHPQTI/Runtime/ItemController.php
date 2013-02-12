@@ -2,6 +2,8 @@
 
 namespace PHPQTI\Runtime;
 
+use PHPQTI\Runtime\Processing\Variable;
+
 class ItemController {
 
     const STATE_NONE = 0;
@@ -56,7 +58,10 @@ class ItemController {
     public function showItemBody() {
         echo "<form method=\"post\" enctype=\"multipart/form-data\">";
         $resource_provider = $this->resource_provider;
-        echo $this->item_body->execute();
+        if(count($this->itemBody) > 0) {
+        	print_r($this->itemBody);
+        	echo $this->itemBody[0]($this);
+        }
         echo "<input type=\"submit\" value=\"Submit response\"/>";
         echo "</form>";
     }
