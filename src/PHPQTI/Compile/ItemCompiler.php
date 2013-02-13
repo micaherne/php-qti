@@ -24,12 +24,6 @@ class ItemCompiler {
             }
         }
 
-        foreach($this->dom->getElementsByTagNameNS('http://www.imsglobal.org/xsd/imsqti_v2p1', 'stylesheet') as $stylesheetNode) {
-            if (!is_null($attr = $stylesheetNode->attributes->getNamedItem('href'))) {
-                $result .= '$this->stylesheets[] = "' . $attr->value . "\";\n";
-            }
-        }
-        
         // Create a function generator
         $result .= "\$f = new PHPQTI\Runtime\FunctionGenerator();\n";
 
@@ -65,11 +59,12 @@ class ItemCompiler {
          * which should be shown to the user.
          */
         // TODO: Check the namespace and ignore non-QTI
-        // TODO: Move stylesheet code from above into this loop
         foreach($this->dom->documentElement->childNodes as $child) {
         	$nodeName = $child->nodeName;
         	if ($nodeName == 'stylesheet') {
-        		continue;
+            	if (!is_null($attr = $stylesheetNode->attributes->getNamedItem('href'))) {
+                    $result .= '$this->stylesheets[] = "' . $attr->value . "\";\n";
+                }
         	}
         	
         	$functioncode = null;
@@ -100,83 +95,7 @@ class ItemCompiler {
         
         $result .= '}}';
         return $result;
-        // Create the itemBody generator function
-        //$result .= '$p = new qti_item_body($this);' . "\n";
 
-        $itemBodyTags = $this->dom->getElementsByTagNameNS ('http://www.imsglobal.org/xsd/imsqti_v2p1', 'itemBody');
-        foreach($itemBodyTags as $node) {
-            $result .= $this->generating_function($node, '$p');
-        }
-
-        $result .= ";\n" . '$this->item_body = $p;' . "\n\n";
-
-        // Create responseProcessing function
-        $result .= '$r = new qti_response_processing($this);' . "\n";
-        $responseProcessingTags = $this->dom->getElementsByTagNameNS ('http://www.imsglobal.org/xsd/imsqti_v2p1', 'responseProcessing');
-        foreach($responseProcessingTags as $node) {
-            // Check for template
-            // TODO: template can be a URI, and templateLocation is used to find the XML
-            // TODO: Remove hard coded location
-            // TODO: Deal with other templates by downloading
-            if (!is_null($node->attributes->getNamedItem('template'))) {
-                $template = $node->attributes->getNamedItem('template');
-                if (strpos($template->value, "http://www.imsglobal.org/question/qti_v2p1/rptemplates/") === 0) {
-                    $template = str_replace("http://www.imsglobal.org/question/qti_v2p1/rptemplates/", '', $template->value);
-                    $dom = new \DOMDocument();
-                    $template_location = 'http://www.imsglobal.org/question/qti_v2p0/rptemplates/'.$template. '.xml';
-                    $dom->load($template_location);
-                    $result .= $this->generating_function($dom->documentElement, '$r');
-                }
-            } else {
-                $result .= $this->generating_function($node, '$r');
-            }
-        }
-
-        $result .= ";\n" . '$this->response_processing = $r;' . "\n";
-
-        // Create templateProcessing function
-        $result .= '$t = new qti_template_processing($this);' . "\n";
-        $templateProcessingTags = $this->dom->getElementsByTagNameNS ('http://www.imsglobal.org/xsd/imsqti_v2p1', 'templateProcessing');
-        foreach($templateProcessingTags as $node) {
-            $result .= $this->generating_function($node, '$t');
-        }
-
-        $result .= ";\n" . '$this->template_processing = $t;' . "\n";
-
-        // Create modalFeedback processor, and add modalFeedback processing functions
-        $result .= '$m = new qti_modal_feedback_processing($this);' . "\n";
-        $modalFeedbackTags = $this->dom->getElementsByTagNameNS ('http://www.imsglobal.org/xsd/imsqti_v2p1', 'modalFeedback');
-        foreach($modalFeedbackTags as $node) {
-            $result .= $this->generating_function($node, '$m');
-            $result .= ";\n";
-        }
-        $result .= '$this->modal_feedback_processing = $m;' . "\n";
-
-
-        // Close __construct
-        $result .= "}";
-        $result .= "    public function beginAttempt() {
-                parent::beginAttempt();\n";
-
-        foreach($this->dom->getElementsByTagNameNS ('http://www.imsglobal.org/xsd/imsqti_v2p1', 'responseDeclaration') as $responseDeclarationNode) {
-            $result .= $this->variable_declaration($responseDeclarationNode);
-        }
-
-        foreach($this->dom->getElementsByTagNameNS ('http://www.imsglobal.org/xsd/imsqti_v2p1', 'outcomeDeclaration') as $outcomeDeclarationNode) {
-            $result .= $this->variable_declaration($outcomeDeclarationNode);
-        }
-
-        foreach($this->dom->getElementsByTagNameNS ('http://www.imsglobal.org/xsd/imsqti_v2p1', 'templateDeclaration') as $templateDeclarationNode) {
-            $result .= $this->variable_declaration($templateDeclarationNode);
-        }
-
-        $result .= "\$this->template_processing->execute();\n";
-
-        // Close beginAttempt
-        $result .= "}";
-        // Close class
-        $result .= "}";
-        return $result;
     }
 
     // Return a view / responseProcessing generating function for a given XML node

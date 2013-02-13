@@ -202,6 +202,10 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         
         $variable3 = new Variable('multiple', 'identifier', array('value' => array('A', 'B', 'C')));
         $this->assertTrue($variable3->match($variable3)->value);
+        
+        // Check for nulls
+        $variable4 = new Variable('single', 'identifier');
+        $this->assertNull($variable4->match($variable3)->value);
     }
     
     public function testStringMatch() {

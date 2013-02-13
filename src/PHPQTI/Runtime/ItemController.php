@@ -24,9 +24,12 @@ class ItemController {
     public $responseDeclaration = array();
     public $outcomeDeclaration = array();
     public $templateDeclaration = array();
+    public $stylesheets = array(); // a simple array of stylesheets
     public $itemBody = array(); // there can be only one
     public $responseProcessing = array();
-    public $modalFeedback = array();
+    public $modalFeedback = array(); // The functions which determine which feedback to show
+    
+    public $modalFeedbackItems = array(); // The actual modal feedback HTML to be shown
 
     public $response = array();
     public $outcome = array();
@@ -35,12 +38,6 @@ class ItemController {
     public $response_source; // provides response values for variables
     public $persistence; // provides existing values of variables
     public $resource_provider; // provides URLs for images etc.
-
-    public $response_processing; // closure which processes responses
-    public $item_body; // closure which displays item body
-    public $modal_feedback_processing; // closure which displays modal feedback
-
-    public $stylesheets; // a simple array of stylesheets
 
     public $show_debugging = false; // do we show memory usage etc.?
 
@@ -76,6 +73,9 @@ class ItemController {
 
     // TODO: Should this be moved out of the item controller into
     // an engine class?
+    // [update] This should just deal with the change of state and processing
+    //    - the calling code should be responsible for calling showItemBody, and
+    //      should also be responsible for displaying the results.
     public function run() {
         $this->persistence->restore($this);
 
@@ -161,16 +161,28 @@ class ItemController {
         $this->resource_provider = $resource_provider;
     }
 
+    /**
+     * Run the responseProcessing function which will update the outcome variables
+     * based on the responses.
+     */
     public function processResponse() {
         foreach($this->responseProcessing as $func) {
             $func($this);
         }
 
-        if ($this->modal_feedback_processing) {
-            echo $this->modal_feedback_processing->execute();
+        // Reset the modal feedback
+        $this->modalFeedbackItems = array();
+        
+        foreach($this->modalFeedback as $func) {
+            print_r($func);
+            $feedbackItem = $func($this);
+            if (!empty($feedbackItem)) {
+                $this->modalFeedbackItems[] = $feedbackItem;
+            }
         }
     }
 
+    // TODO: This should probably be the responsibility of the calling code
     public function displayResults() {
         echo "<div class=\"well\">";
         foreach($this->outcome as $key => $outcome) {

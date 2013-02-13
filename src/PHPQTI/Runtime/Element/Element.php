@@ -19,12 +19,17 @@ abstract class Element {
     }
     
     public function __invoke($controller) {
-        $result = '<span class="' . get_class($this) . '">';
+        $result = '<span class="' . $this->cssClass() . '">';
         foreach($this->children as $child) {
             $result .= $child->__invoke($controller);
         }
         $result .= "</span>";
         return $result;
+    }
+    
+    public function cssClass() {
+        $nsparts = explode('\\', get_class($this));
+        return 'qti_' . lcfirst(array_pop($nsparts));
     }
     
     /** Convenience method to get all attributes as an array of HTML5 data attributes

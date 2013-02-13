@@ -77,7 +77,7 @@ class FunctionGenerator {
         };
     }
     
-    public static function __basicElement($name, $attrs, $children) {
+    public static function __basicElement($name, $attrs, $children, $controller) {
     	$result = "<$name";
     	if(!empty($attrs)) {
     		foreach($attrs as $key => $value) {
@@ -107,7 +107,7 @@ class FunctionGenerator {
             if(isset($attrs['src'])) {
                 $attrs['src'] = $controller->resource_provider->urlFor($attrs['src']);
             }
-            return FunctionGenerator::__basicElement('img', $attrs, $args);
+            return FunctionGenerator::__basicElement('img', $attrs, $args, $controller);
         };
     }
     
@@ -116,7 +116,7 @@ class FunctionGenerator {
             if(isset($attrs['data'])) {
                 $attrs['data'] = $controller->resource_provider->urlFor($attrs['data']);
             }
-            return FunctionGenerator::__basicElement('object', $attrs, $args);
+            return FunctionGenerator::__basicElement('object', $attrs, $args, $controller);
         };
     }
 

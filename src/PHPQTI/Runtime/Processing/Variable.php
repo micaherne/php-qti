@@ -454,7 +454,7 @@ class Variable {
 
         if($this->_isNull() || $othervariable->_isNull()) {
         	$result->value = null;
-        	return;
+        	return $result;
         }
         
         // TODO: Is it OK just to let PHP decide if two values are equal?
