@@ -32,14 +32,14 @@ abstract class FeedbackElement extends Element {
         }
 
         if ($comparisonresult->value && $showHide == 'show') {
-            $result = "<span class=\"{$class}\">";
+            $result = "<span class=\"{$this->cssClass()}\">";
             foreach ($this->children as $child) {
                 $result .= $child->__invoke($controller);
             }
             $result .= '</span>';
             return $result;
         } else if (!$comparisonresult->value && $showHide == 'hide') {
-            $result = "<span class=\"{$class}\">";
+            $result = "<span class=\"{$this->cssClass()}\">";
             foreach ($this->children as $child) {
                 $result .= $child->__invoke($controller);
             }

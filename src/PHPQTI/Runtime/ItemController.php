@@ -71,36 +71,32 @@ class ItemController {
         echo "</form>";
     }
 
-    // TODO: Should this be moved out of the item controller into
-    // an engine class?
-    // [update] This should just deal with the change of state and processing
+    // This just deals with the change of state and processing
     //    - the calling code should be responsible for calling showItemBody, and
     //      should also be responsible for displaying the results.
+    // TODO: This is still just a demo workflow - it needs a bit of work!
+    // We should really have buttons to explicitly end the session, suspend etc.
     public function run() {
         $this->persistence->restore($this);
-
-        if ($this->state == ItemController::STATE_NONE) {
-            $this->beginItemSession();
-        }
-
-        if ($this->state == ItemController::STATE_INTERACTING) {
-            if($this->response_source->isEndAttempt()) {
-                // TODO: fix (the person has submitted the item)
-                $this->endAttempt();
-            }
-        }
-
-        // TODO: How do we know when to show the body / results?
-        $this->showItemBody();
-        $this->displayResults();
+        
+        switch($this->state) {
+            case ItemController::STATE_NONE:
+                $this->beginItemSession();
+                break;
+            case ItemController::STATE_INITIAL:
+                $this->beginAttempt();
+                break;
+            case ItemController::STATE_INTERACTING:
+                if($this->response_source->isEndAttempt()) {
+                    // TODO: fix (the person has submitted the item)
+                    $this->endAttempt();
+                } else {
+                    $this->bindVariables();
+                    $this->processResponse();
+                }
+        }       
 
         $this->persistence->persist($this);
-
-        $this->beginAttempt();
-
-        if ($this->show_debugging) {
-            echo "<hr />Memory: " . memory_get_peak_usage() / (1024 * 1024) . "Mb"; // TODO: Remove this debugging
-        }
 
     }
 
@@ -132,6 +128,20 @@ class ItemController {
         }
         foreach($this->templateDeclaration as $key => $func) {
             $func($this);
+        }
+        
+        // Initialise the outcome and template variables
+        // TODO: Should we also do response variables? Should we even do templates?
+        foreach($this->outcome as $name => &$variable) {
+            if (is_null($variable->value) && !is_null($variable->defaultValue)) {
+                $this->outcome[$name]->value = $variable->defaultValue;
+            }
+        }
+        
+        foreach($this->template as &$variable) {
+            if (is_null($variable->value) && !is_null($variable->defaultValue)) {
+                $variable->value = $variable->defaultValue;
+            }
         }
     }
 
@@ -182,7 +192,7 @@ class ItemController {
     }
 
     // TODO: This should probably be the responsibility of the calling code
-    public function displayResults() {
+    public function displayVariables() {
         echo "<div class=\"well\">";
         foreach($this->outcome as $key => $outcome) {
             echo "$key: " . $outcome . "<br />";
@@ -197,6 +207,12 @@ class ItemController {
         }
 
         echo "</div>";
+    }
+    
+    public function displayDebugging() {
+        if ($this->show_debugging) {
+            echo '<div class="well"><hr />Memory: ' . memory_get_peak_usage() / (1024 * 1024) . "Mb</div>"; // TODO: Remove this debugging
+        }
     }
 
     public function getCSS() {

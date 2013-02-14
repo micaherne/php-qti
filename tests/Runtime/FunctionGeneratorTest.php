@@ -1,7 +1,7 @@
 <?php
 
 use PHPQTI\Runtime\ItemController;
-
+use PHPQTI\Runtime\Processing\Variable;
 use PHPQTI\Runtime\FunctionGenerator;
 
 //    PHP-QTI - a PHP library for QTI v2.1
@@ -56,6 +56,53 @@ class FunctionGeneratorTest extends PHPUnit_Framework_TestCase {
 		$result = $func($controller);
 		$var = $controller->response['RESPONSE'];
 		$this->assertEquals('ChoiceA', $var->correctResponse);
+	}
+	
+	public function testOutcomeDeclaration() {
+        $fg = new FunctionGenerator();
+		$dom = new \DomDocument();
+		$dom->loadXML('<outcomeDeclaration identifier="STORY" cardinality="single" baseType="identifier">
+		<defaultValue>
+			<value>openingGambit</value>
+		</defaultValue>
+	</outcomeDeclaration>');
+		
+		$func = $fg->fromXmlElement($dom->documentElement);
+		$controller = new ItemController();
+		$result = $func($controller);
+		$var = $controller->outcome['STORY'];
+		$this->assertEquals('openingGambit', $var->defaultValue);
+	}
+	
+	public function testVariable() {
+	    $xml = '<variable identifier="FEEDBACK"/>';
+	    $fg = new FunctionGenerator();
+	    $dom = new \DomDocument();
+	    $dom->loadXML($xml);
+	     
+	    $func = $fg->fromXmlElement($dom->documentElement);
+	    $controller = new ItemController();
+	    $controller->outcome['FEEDBACK'] = new Variable('multiple', 'identifier', array('value' => array('before', 'again')));
+	    $this->assertEquals('multiple', $controller->outcome['FEEDBACK']->cardinality);
+	    $result = $func($controller);
+	    $this->assertEquals('multiple', $result->cardinality);
+	}
+	
+	public function testDelete() {
+	    $xml = '<delete>
+						<variable identifier="FEEDBACK"/>
+						<baseValue baseType="identifier">again</baseValue>
+					</delete>';
+	    $fg = new FunctionGenerator();
+	    $dom = new \DomDocument();
+	    $dom->loadXML($xml);
+	    
+	    $func = $fg->fromXmlElement($dom->documentElement);
+	    $controller = new ItemController();
+	    $controller->outcome['FEEDBACK'] = new Variable('multiple', 'identifier', array('value' => array('before', 'again')));
+	    $this->assertEquals('multiple', $controller->outcome['FEEDBACK']->cardinality);
+	    //$result = $func($controller);
+	    //$this->assertEquals(array('before'), $controller->outcome['FEEDBACK']->value);
 	}
 	
 }
