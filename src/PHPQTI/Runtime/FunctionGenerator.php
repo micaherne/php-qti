@@ -1,5 +1,21 @@
 <?php
 
+//    PHP-QTI - a PHP library for QTI v2.1
+//    Copyright (C) 2013 Michael Aherne
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 namespace PHPQTI\Runtime;
 
 use PHPQTI\Runtime\Processing\Variable;
@@ -55,6 +71,39 @@ class FunctionGenerator {
 
         // default to just creating a basic HTML element
         return $this->__default($name, $attrs, $args);
+    }
+    
+    /**
+     * Generate a function from an QTI element.
+     * 
+     * This is mainly intended for simplifying testing and should not necessarily be
+     * relied upon for actually running a QTI item.
+     * 
+     * @param \DomElement $el a QTI element
+     * @return object a closure or class which implements the element
+     */
+    public function fromXmlElement(\DomElement $el) {
+    	$attrs = array();
+    	foreach($el->attributes as $name => $attr) {
+    		$attrs[$name] = $attr->nodeValue;
+    	}
+    	$args = array($attrs);
+    	foreach($el->childNodes as $node) {
+    		if ($node->nodeType == XML_ELEMENT_NODE) {
+    			$args[] = $this->fromXmlElement($node);
+    		} else if ($node->nodeType == XML_TEXT_NODE) {
+    		    if (trim($node->textContent) == '') {
+    		        continue;
+    		    }
+    			$args[] = $this->__text($node->nodeValue);
+    		} else if ($node->nodeType == XML_CDATA_SECTION_NODE) {
+    		    if (trim($node->textContent) == '') {
+    		        continue;
+    		    }
+    			$args[] = $this->__text($node->nodeValue);
+    		}
+    	}
+    	return $this->__call($el->nodeName, $args);
     }
 
     // Just return a function to create a basic HTML element

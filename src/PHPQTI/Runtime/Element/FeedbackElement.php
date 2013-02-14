@@ -31,7 +31,6 @@ abstract class FeedbackElement extends Element {
             $comparisonresult = $variable->match($testvar);
         }
 
-        echo ($variable->cardinality) . (is_null($comparisonresult) ? "null" : "not");
         if ($comparisonresult->value && $showHide == 'show') {
             $result = "<span class=\"{$class}\">";
             foreach ($this->children as $child) {

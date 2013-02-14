@@ -174,7 +174,6 @@ class ItemController {
         $this->modalFeedbackItems = array();
         
         foreach($this->modalFeedback as $func) {
-            print_r($func);
             $feedbackItem = $func($this);
             if (!empty($feedbackItem)) {
                 $this->modalFeedbackItems[] = $feedbackItem;
