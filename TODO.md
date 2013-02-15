@@ -1,6 +1,6 @@
 Stuff to do just to get it working soundly:
 
-Create new "not implemented" generator functions in FunctionGenerator for all relevant elements. There are various new elements like "min", "max", "mathOperator" etc. which are just being picked up by the identity transform but should be throwing an exception. It might be worth considering holding an explicit list of elements which are passed to the identity transform, rather than defaulting to it.
+Create new "not implemented" generator functions in FunctionGenerator for all relevant elements. There are various new elements like "min", "max", "mathOperator" etc. which are just being picked up by the identity transform but should be throwing an exception. It might be worth considering holding an explicit list of elements which are passed to the identity transform, rather than defaulting to it. [DONE]
 
 The value attribute on Variable is potentially flaky. It's generally down to calling code to make sure it's an array or a single value depending on the cardinality of the variable. I'd rather have this done with an accessor, although it would probably mean fixing hundreds of instances throughout the code.
 

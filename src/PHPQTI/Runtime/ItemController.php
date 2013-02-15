@@ -27,6 +27,7 @@ class ItemController {
     public $stylesheets = array(); // a simple array of stylesheets
     public $itemBody = array(); // there can be only one
     public $responseProcessing = array();
+    public $templateProcessing = array();
     public $modalFeedback = array(); // The functions which determine which feedback to show
     
     public $modalFeedbackItems = array(); // The actual modal feedback HTML to be shown

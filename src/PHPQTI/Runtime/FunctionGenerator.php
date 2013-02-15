@@ -20,6 +20,7 @@ namespace PHPQTI\Runtime;
 
 use PHPQTI\Runtime\Processing\Variable;
 use PHPQTI\Runtime\Processing\ProcessingException;
+use PHPQTI\Runtime\Exception\NotImplementedException;
 
 /**
  * Generates a closure or other invokable class for a given QTI element.
@@ -304,7 +305,7 @@ class FunctionGenerator {
     }
     
     public function _lookupOutcomeValue($attrs, $children) {
-        throw new \Exception("Not implemented");
+        throw new NotImplementedException("lookupOutcomeValue");
     }
     
     /*
@@ -648,7 +649,7 @@ class FunctionGenerator {
     }
     
     public function _equal($attrs, $children) {
-        throw new \Exception("Not implemented");
+        throw new NotImplementedException("equal");
     }
     
     public function _equalRounded($attrs, $children) {
@@ -661,7 +662,7 @@ class FunctionGenerator {
     }
     
     public function _inside($attrs, $children) {
-        throw new \Exception("Not implemented");
+        throw new NotImplementedException("inside");
     }
     
     public function _lt($attrs, $children) {
@@ -701,11 +702,11 @@ class FunctionGenerator {
     }
     
     public function _durationLT($attrs, $children) {
-        throw new \Exception("Not implemented");
+        throw new NotImplementedException("durationLT");
     }
     
     public function _durationGTE($attrs, $children) {
-        throw new \Exception("Not implemented");
+        throw new NotImplementedException("durationGTE");
     }
     
     public function _sum($attrs, $children) {
@@ -798,7 +799,280 @@ class FunctionGenerator {
     }
     
     public function _customOperator($attrs, $children) {
-        throw new \Exception("Not implemented");
+        throw new NotImplementedException("customOperator");
     }
+    
+    /*
+     * Not implemented yet. These should be moved to a better place in the code
+     * when implemented.
+     */
 
+    public function _exitResponse($attrs, $children) {
+        throw new NotImplementedException('exitResponse');
+    }
+    
+    public function _exitTemplate($attrs, $children) {
+        throw new NotImplementedException('exitTemplate');
+    }
+    
+    public function _exitTest($attrs, $children) {
+        throw new NotImplementedException('exitTest');
+    }
+    
+    public function _templateBlock($attrs, $children) {
+        throw new NotImplementedException('templateBlock');
+    }
+    
+    public function _templateInline($attrs, $children) {
+        throw new NotImplementedException('templateInline');
+    }
+    
+    public function _assessmentItemRef($attrs, $children) {
+        throw new NotImplementedException('assessmentItemRef');
+    }
+    
+    public function _branchRule($attrs, $children) {
+        throw new NotImplementedException('branchRule');
+    }
+    
+    public function _customInteraction($attrs, $children) {
+        throw new NotImplementedException('customInteraction');
+    }
+    
+    public function _drawingInteraction($attrs, $children) {
+        throw new NotImplementedException('drawingInteraction');
+    }
+    
+    public function _gapImg($attrs, $children) {
+        throw new NotImplementedException('gapImg');
+    }
+    
+    public function _gcd($attrs, $children) {
+        throw new NotImplementedException('gcd');
+    }
+    
+    public function _graphicAssociateInteraction($attrs, $children) {
+        throw new NotImplementedException('graphicAssociateInteraction');
+    }
+    
+    public function _graphicGapMatchInteraction($attrs, $children) {
+        throw new NotImplementedException('graphicGapMatchInteraction');
+    }
+    
+    public function _graphicOrderInteraction($attrs, $children) {
+        throw new NotImplementedException('graphicOrderInteraction');
+    }
+    
+    public function _hotspotInteraction($attrs, $children) {
+        throw new NotImplementedException('hotspotInteraction');
+    }
+    
+    public function _infoControl($attrs, $children) {
+        throw new NotImplementedException('infoControl');
+    }
+    
+    public function _interpolationTable($attrs, $children) {
+        throw new NotImplementedException('interpolationTable');
+    }
+    
+    public function _lcm($attrs, $children) {
+        throw new NotImplementedException('lcm');
+    }
+    
+    public function _matchTable($attrs, $children) {
+        throw new NotImplementedException('matchTable');
+    }
+    
+    public function _mathOperator($attrs, $children) {
+        throw new NotImplementedException('mathOperator');
+    }
+    
+    public function _max($attrs, $children) {
+        throw new NotImplementedException('max');
+    }
+    
+    public function _mediaInteraction($attrs, $children) {
+        throw new NotImplementedException('mediaInteraction');
+    }
+    
+    public function _min($attrs, $children) {
+        throw new NotImplementedException('min');
+    }
+    
+    public function _ordering($attrs, $children) {
+        throw new NotImplementedException('ordering');
+    }
+    
+    public function _outcomeCondition($attrs, $children) {
+        throw new NotImplementedException('outcomeCondition');
+    }
+    
+    public function _outcomeElse($attrs, $children) {
+        throw new NotImplementedException('outcomeElse');
+    }
+    
+    public function _outcomeElseIf($attrs, $children) {
+        throw new NotImplementedException('outcomeElseIf');
+    }
+    
+    public function _outcomeIf($attrs, $children) {
+        throw new NotImplementedException('outcomeIf');
+    }
+    
+    public function _outcomeProcessing($attrs, $children) {
+        throw new NotImplementedException('outcomeProcessing');
+    }
+    
+    public function _outcomeProcessingFragment($attrs, $children) {
+        throw new NotImplementedException('outcomeProcessingFragment');
+    }
+    
+    public function _positionObjectInteraction($attrs, $children) {
+        throw new NotImplementedException('positionObjectInteraction');
+    }
+    
+    public function _positionObjectStage($attrs, $children) {
+        throw new NotImplementedException('positionObjectStage');
+    }
+    
+    public function _preCondition($attrs, $children) {
+        throw new NotImplementedException('preCondition');
+    }
+    
+    public function _repeat($attrs, $children) {
+        throw new NotImplementedException('repeat');
+    }
+    
+    public function _responseProcessingFragment($attrs, $children) {
+        throw new NotImplementedException('responseProcessingFragment');
+    }
+    
+    public function _roundTo($attrs, $children) {
+        throw new NotImplementedException('roundTo');
+    }
+    
+    public function _rubricBlock($attrs, $children) {
+        throw new NotImplementedException('rubricBlock');
+    }
+    
+    public function _selection($attrs, $children) {
+        throw new NotImplementedException('selection');
+    }
+    
+    public function _setDefaultValue($attrs, $children) {
+        throw new NotImplementedException('setDefaultValue');
+    }
+    
+    public function _statsOperator($attrs, $children) {
+        throw new NotImplementedException('statsOperator');
+    }
+    
+    public function _templateConstraint($attrs, $children) {
+        throw new NotImplementedException('templateConstraint');
+    }
+    
+    public function _templateDefault($attrs, $children) {
+        throw new NotImplementedException('templateDefault');
+    }
+    
+    public function _testFeedback($attrs, $children) {
+        throw new NotImplementedException('testFeedback');
+    }
+    
+    public function _testPart($attrs, $children) {
+        throw new NotImplementedException('testPart');
+    }
+    
+    public function _assessmentSectionRef($attrs, $children) {
+        throw new NotImplementedException('assessmentSectionRef');
+    }
+    
+    public function _associableHotspot($attrs, $children) {
+        throw new NotImplementedException('associableHotspot');
+    }
+    
+    public function _hotspotChoice($attrs, $children) {
+        throw new NotImplementedException('hotspotChoice');
+    }
+    
+    public function _interpolationTableEntry($attrs, $children) {
+        throw new NotImplementedException('interpolationTableEntry');
+    }
+    
+    public function _itemSessionControl($attrs, $children) {
+        throw new NotImplementedException('itemSessionControl');
+    }
+    
+    public function _matchTableEntry($attrs, $children) {
+        throw new NotImplementedException('matchTableEntry');
+    }
+    
+    public function _mathConstant($attrs, $children) {
+        throw new NotImplementedException('mathConstant');
+    }
+    
+    public function _numberCorrect($attrs, $children) {
+        throw new NotImplementedException('numberCorrect');
+    }
+    
+    public function _numberIncorrect($attrs, $children) {
+        throw new NotImplementedException('numberIncorrect');
+    }
+    
+    public function _numberPresented($attrs, $children) {
+        throw new NotImplementedException('numberPresented');
+    }
+    
+    public function _numberResponded($attrs, $children) {
+        throw new NotImplementedException('numberResponded');
+    }
+    
+    public function _numberSelected($attrs, $children) {
+        throw new NotImplementedException('numberSelected');
+    }
+    
+    public function _outcomeMaximum($attrs, $children) {
+        throw new NotImplementedException('outcomeMaximum');
+    }
+    
+    public function _outcomeMinimum($attrs, $children) {
+        throw new NotImplementedException('outcomeMinimum');
+    }
+    
+    public function _param($attrs, $children) {
+        throw new NotImplementedException('param');
+    }
+    
+    public function _stylesheet($attrs, $children) {
+        throw new NotImplementedException('stylesheet');
+    }
+    
+    public function _testVariables($attrs, $children) {
+        throw new NotImplementedException('testVariables');
+    }
+    
+    public function _timeLimits($attrs, $children) {
+        throw new NotImplementedException('timeLimits');
+    }
+    
+    public function _variableMapping($attrs, $children) {
+        throw new NotImplementedException('variableMapping');
+    }
+    
+    public function _weight($attrs, $children) {
+        throw new NotImplementedException('weight');
+    }
+    
+    public function _assessmentItem($attrs, $children) {
+        throw new NotImplementedException('assessmentItem');
+    }
+    
+    public function _assessmentSection($attrs, $children) {
+        throw new NotImplementedException('assessmentSection');
+    }
+    
+    public function _assessmentTest($attrs, $children) {
+        throw new NotImplementedException('assessmentTest');
+    }
+    
 }
