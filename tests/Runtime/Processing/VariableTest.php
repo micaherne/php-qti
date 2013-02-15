@@ -83,6 +83,9 @@ class VariableTest extends PHPUnit_Framework_TestCase {
     public function testIndex() {
         $variable1 = new Variable('multiple', 'identifier', array('value' => array('thing1', 'thing2')));
         $this->assertEquals("thing2", $variable1->index(2)->value);
+        
+        $variable2 = new Variable('multiple', 'float');
+        $this->assertNull($variable2->index(2)->value);
     }
     
     public function testRandom() {
@@ -186,6 +189,7 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         
         $variable3 = new Variable('single', 'boolean');
         $this->assertNull(Variable::anyN(2, 4, $variable1, $variable3, $variable3, $variable3)->value);
+
     }
 
     public function testMatch() {

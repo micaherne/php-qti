@@ -232,4 +232,28 @@ class ItemController {
         }
         return $result;
     }
+    
+    /**
+     * Parse a *orVariableRef attribute.
+     * 
+     * If this is in the form {TEMPLATE_VAR} we return the variable, otherwise
+     * we just return the value as-is. See 10.2 Using Template Variables in Operator
+     * Attributes Values
+     * 
+     * @param string $value
+     */
+    public function valueOrVariable($value) {
+        $matches = array();
+        if (preg_match('/^\{(\w*)\}$/', $value, $matches)) {
+        if (isset($this->template[$matches[1]])) {
+                return $this->template[$matches[1]]->value;
+            } else if (isset($this->outcome[$matches[1]])) {
+                return $this->outcome[$matches[1]]->value;
+            } else {
+                throw new \Exception("invalid template variable");
+            }
+        } else {
+            return $value;
+        }
+    }
 }

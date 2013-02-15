@@ -534,9 +534,10 @@ class FunctionGenerator {
     }
     
     public function _index($attrs, $children) {
-        return function($controller) use ($attrs, $children) {
+        return function(ItemController $controller) use ($attrs, $children) {
+            $n = $controller->valueOrVariable($attrs['n']);
             $what = $children[0]->__invoke($controller);
-            return $what->index($attrs['n']);
+            return $what->index($n);
         };
     }
     
@@ -619,7 +620,9 @@ class FunctionGenerator {
             foreach($children as $child) {
                 $vars[] = $child->__invoke($controller);
             }
-            return Variable::anyN($attrs['min'], $attrs['max'], $vars);
+            $min = $this->valueOrVariable($attrs['min']);
+            $max = $this->valueOrVariable($attrs['max']);
+            return Variable::anyN($min, $max, $vars);
         };
     }
     

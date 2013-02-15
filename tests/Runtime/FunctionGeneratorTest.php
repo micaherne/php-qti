@@ -105,4 +105,30 @@ class FunctionGeneratorTest extends PHPUnit_Framework_TestCase {
 	    //$this->assertEquals(array('before'), $controller->outcome['FEEDBACK']->value);
 	}
 	
+	public function testIndex() {
+	    $fg = new FunctionGenerator();
+	    $dom = new \DomDocument();
+	    
+	    $xml = '<index n="2"><variable identifier="numbers"/></index>';
+	    $dom->loadXML($xml);
+	     
+	    $func = $fg->fromXmlElement($dom->documentElement);
+	    
+	    $controller = new ItemController();
+	    $controller->response['numbers'] = new Variable('multiple', 'integer', array('value' => array(1, 2, 3, 4, 5, 6)));
+	    $controller->template['i'] = new Variable('single', 'integer', array('value' => 5));
+	    $result1 = $func($controller);
+	    $this->assertInstanceOf('PHPQTI\Runtime\Processing\Variable', $result1);
+	    $this->assertEquals('2', $result1->value);
+	    
+	    // Test template variable substitution
+	    $xml = '<index n="{i}"><variable identifier="numbers"/></index>';
+	    $dom->loadXML($xml);
+	    $func = $fg->fromXmlElement($dom->documentElement);
+	    $result2 = $func($controller);
+	    $this->assertEquals('5', $result2->value);
+	     
+	    
+	}
+	
 }
