@@ -8,7 +8,7 @@ class Variable {
     public $type;
     // For response vars, QTI has a candidateResponse wrapper for the value - any reason to implement?
     public $value;
-    public $correctResponse;
+    public $correctResponse = null;
     public $defaultValue = null;
     public $mapping = null;
 
@@ -292,7 +292,7 @@ class Variable {
     }
 
     public function member($container) {
-        $result = new Variable('single', 'boolean', array('value' => false));
+        $result = new Variable('single', 'boolean');
         if (!$this->_isNull() && !$container->_isNull()) {
             $result->value = in_array($this->value, $container->value);
         }
@@ -756,7 +756,7 @@ class Variable {
     }
 
     public function divide($othervariable) {
-        $result = clone($this);
+        $result = new Variable('single', 'float');
 
         if ($this->_isNull() || $othervariable->_isNull() || $othervariable->value == 0) {
             $result->value = null;
