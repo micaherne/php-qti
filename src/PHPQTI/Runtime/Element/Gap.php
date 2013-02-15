@@ -7,7 +7,12 @@ class Gap extends Element {
     public function __invoke($controller) {
         $gapMatchInteraction = $controller->context['gapMatchInteraction'];
         $identifier = $this->attrs['identifier'];
-        $result = "<span class=\"qti_gap\"><select name=\"{$gapMatchInteraction->attrs['responseIdentifier']}[{$identifier}]\">";
+        if (isset($this->attrs['required']) && $this->attrs['required'] == 'true') {
+            $required = ' required = "required" ';
+        } else {
+            $required = '';
+        }
+        $result = "<span class=\"qti_gap\"><select name=\"{$gapMatchInteraction->attrs['responseIdentifier']}[{$identifier}]\" $required>";
         $result .= "<option></option>";
         foreach($gapMatchInteraction->gapChoice as $choice) {
             $variable = $controller->response[$gapMatchInteraction->attrs['responseIdentifier']];

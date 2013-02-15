@@ -9,7 +9,9 @@ class Variable {
     // For response vars, QTI has a candidateResponse wrapper for the value - any reason to implement?
     public $value;
     public $correctResponse = null;
+    public $correctResponseInterpretation = null;
     public $defaultValue = null;
+    public $defaultValueInterpretation = null;
     public $mapping = null;
 
     /**

@@ -47,7 +47,7 @@ class FunctionGeneratorTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('<p>Look at the text in the picture.</p>', $result);
 		
 		$dom->loadXML('<responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
-		<correctResponse>
+		<correctResponse interpretation="Choice A">
 			<value>ChoiceA</value>
 		</correctResponse>
 	</responseDeclaration>');
@@ -56,6 +56,7 @@ class FunctionGeneratorTest extends PHPUnit_Framework_TestCase {
 		$result = $func($controller);
 		$var = $controller->response['RESPONSE'];
 		$this->assertEquals('ChoiceA', $var->correctResponse);
+		$this->assertEquals('Choice A', $var->correctResponseInterpretation);
 	}
 	
 	public function testOutcomeDeclaration() {
@@ -72,6 +73,27 @@ class FunctionGeneratorTest extends PHPUnit_Framework_TestCase {
 		$result = $func($controller);
 		$var = $controller->outcome['STORY'];
 		$this->assertEquals('openingGambit', $var->defaultValue);
+	}
+
+	public function testResponseDeclaration() {
+	    $fg = new FunctionGenerator();
+	    $dom = new \DomDocument();
+	    $dom->loadXML('<responseDeclaration identifier="STORY" cardinality="multiple" baseType="identifier">
+		<defaultValue interpretation="The Beatles">
+			<value>john</value>
+			<value>paul</value>
+	        <value>george</value>
+	        <value>ringo</value>
+	    </defaultValue>
+	</responseDeclaration>');
+	
+	    $func = $fg->fromXmlElement($dom->documentElement);
+	    $controller = new ItemController();
+	    $result = $func($controller);
+	    $var = $controller->response['STORY'];
+	    $this->assertInternalType('array', $var->defaultValue);
+	    $this->assertEquals(array('john', 'paul', 'george', 'ringo'), $var->defaultValue);
+	    $this->assertEquals('The Beatles', $var->defaultValueInterpretation);
 	}
 	
 	public function testVariable() {
