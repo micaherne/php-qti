@@ -14,14 +14,14 @@ class AreaMapping extends Element {
             $entry->mappedValue = $attrs['mappedValue'];
             $mapping->areaMapEntries[] = $entry;
         }
-        if (isset($attrs['lowerBound'])) {
-            $mapping->lowerBound = $attrs['lowerBound'];
+        if (isset($this->attrs['lowerBound'])) {
+            $mapping->lowerBound = $this->attrs['lowerBound'];
         }
-        if (isset($attrs['upperBound'])) {
-            $mapping->upperBound = $attrs['upperBound'];
+        if (isset($this->attrs['upperBound'])) {
+            $mapping->upperBound = $this->attrs['upperBound'];
         }
-        if (isset($attrs['defaultValue'])) {
-            $mapping->defaultValue = $attrs['defaultValue'];
+        if (isset($this->attrs['defaultValue'])) {
+            $mapping->defaultValue = $this->attrs['defaultValue'];
         }
         return $mapping;
 	}
