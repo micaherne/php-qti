@@ -228,6 +228,7 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         $variable1 = new Variable('single', 'string', array('value' => 'Some String'));
         $this->assertTrue($variable1->patternMatch('^Some')->value);
         $this->assertFalse($variable1->patternMatch('\d{3}')->value);
+        $this->assertFalse($variable1->patternMatch('%\d')->value);
     }
     
     /* public function testEqual() {

@@ -524,7 +524,8 @@ class Variable {
             return result;
         }
 
-        // TODO: What if the pattern contains a percent? Should be escaped
+        // If the pattern contains a percent it should be escaped
+        $pattern = str_replace('%', '\%', $pattern);
         $result->value = (preg_match('%' . $pattern . '%', $this->value) > 0);
         return $result;
     }
