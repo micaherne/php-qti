@@ -277,7 +277,7 @@ class Variable {
     }
 
     public function fieldValue($fieldidentifier) {
-        throw new Exception("Not implemented");
+        throw new \Exception("Not implemented");
     }
 
     public function random() {
@@ -524,12 +524,59 @@ class Variable {
     }
 
     // TODO: Implement these methods
+    /*
+     * I'm having trouble understanding this expression. It looks from the spec as if
+     * the XML should have two tolerance attributes if the mode is absolute
+     * or relative. If I understand it correctly, this means an xs:list, which is
+     * a whitespace-separated list in a single attribute.
+     * 
+     * Also, all the example items which use equal only use the exact toleranceMode 
+     * so I can't find an example to work from.
+     * 
+     * The tolerance can also be a variable reference (in curly brackets), so we
+     * may need a way for a variable to access the value of other variables. This
+     * doesn't fit well with the way this class has been implemented, but can probably
+     * be done.
+     * 
+     * Implementing as per my understanding, so may not be completely accurate!
+     */
     public function equal() {
-        throw new Exception("Not implemented");
+        throw new \Exception("Not implemented");
     }
 
-    public function equalRounded() {
-        throw new Exception("Not implemented");
+    /**
+     * Check if two variables are the same if rounded.
+     * 
+     * @todo I'm not at all sure this is a correct implementation. It passes 
+     * the test given in the spec, but needs checked.
+     * 
+     * @param Variable $other the variable to test this against
+     * @param integer $figures the number of significant figures or decimal places
+     * @param string $roundingMode either significantFigures or decimalPlaces
+     * @throws \Exception on invalid roundingMode
+     * @return \PHPQTI\Runtime\Processing\Variable single boolean result
+     */
+    public function equalRounded(Variable $other, $figures, $roundingMode='significantFigures') {
+        $result = new Variable('single', 'boolean');
+        if($this->_isNull() || $other->_isNull()) {
+            return $result;
+        }
+        if ($roundingMode == 'significantFigures') {
+            $figuresThis = $this->value * pow(10, $figures - 1);
+            $figuresThis = round($figuresThis, 0, PHP_ROUND_HALF_UP);
+            $figuresThis /= pow(10, $figures);
+            $figuresOther = $other->value * pow(10, $figures - 1);
+            $figuresOther = round($figuresOther, 0, PHP_ROUND_HALF_UP);
+            $figuresOther /= pow(10, $figures);
+            $result->value = ($figuresThis == $figuresOther);
+            return $result;
+        } else if ($roundingMode == 'decimalPlaces') {
+            $thisRounded = round($this->value, $figures, PHP_ROUND_HALF_UP);
+            $otherRounded = round($other->value, $figures, PHP_ROUND_HALF_UP);
+            $result->value = ($thisRounded == $otherRounded);
+            return $result;
+        }
+        throw new \Exception("Invalid rounding mode $roundingMode. Only significantFigures or decimalPlaces supported.");
     }
 
     // TODO: Implement poly (and maybe ellipse, although deprecated)
@@ -581,13 +628,13 @@ class Variable {
                     }
                     break;
                 case 'poly':
-                    throw new Exception("inside poly not implemented");
+                    throw new \Exception("inside poly not implemented");
                     break;
                 case 'ellipse':
-                    throw new Exception("inside ellipse not implemented");
+                    throw new \Exception("inside ellipse not implemented");
                     break;
                 case 'default':
-                    throw new Exception("inside default not implemented - please call with a rect instead");
+                    throw new \Exception("inside default not implemented - please call with a rect instead");
                     break;
                 default:
                     break;
@@ -647,11 +694,11 @@ class Variable {
 
     // TODO: Implement these functions
     public function durationLT() {
-        throw new Exception("Not implemented");
+        throw new \Exception("Not implemented");
     }
 
     public function durationGTE() {
-        throw new Exception("Not implemented");
+        throw new \Exception("Not implemented");
     }
 
     public static function sum() {
@@ -784,7 +831,7 @@ class Variable {
     }
 
     public function customOperator() {
-        throw new Exception("Not implemented");
+        throw new \Exception("Not implemented");
     }
 
 

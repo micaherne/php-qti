@@ -132,16 +132,21 @@ class ItemController {
         
         // Initialise the outcome and template variables
         // TODO: Should we also do response variables? Should we even do templates?
-        foreach($this->outcome as $name => &$variable) {
+        foreach($this->outcome as $name => $variable) {
             if (is_null($variable->value) && !is_null($variable->defaultValue)) {
                 $this->outcome[$name]->value = $variable->defaultValue;
             }
         }
         
-        foreach($this->template as &$variable) {
+        foreach($this->template as $name => $variable) {
             if (is_null($variable->value) && !is_null($variable->defaultValue)) {
-                $variable->value = $variable->defaultValue;
+                $this->template[$name]->value = $variable->defaultValue;
             }
+        }
+        
+        // Process templates
+        foreach($this->templateProcessing as $func) {
+            $func($this);
         }
     }
 

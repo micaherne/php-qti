@@ -118,11 +118,6 @@ class VariableTest extends PHPUnit_Framework_TestCase {
     
     }
     
-    public function testArrays() {
-        $arr1 = array(1, 5, 10, 15, 15, 20, 25);
-        $arr2 = array(15, 20);
-    }
-    
     public function testContains() {
         $variable1 = new Variable('single', 'identifier', array('value' => 6));
         $variable2 = new Variable('multiple', 'identifier', array('value' => array(2, 4, 6, 8, 10)));
@@ -226,6 +221,39 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($variable1->patternMatch('^Some')->value);
         $this->assertFalse($variable1->patternMatch('\d{3}')->value);
     }
+    
+    /* public function testEqual() {
+        // not implemented yet
+    } */
+    
+    /* 
+     * This is the test from the spec, but I haven't managed to implement
+     * the function yet!
+     * */
+      public function testEqualRounded() {
+        // examples from spec
+        $var1 = new Variable('single', 'float');
+        $var2 = new Variable('single', 'float');
+        $result1 = $var1->equalRounded($var2, 12);
+        $this->assertNull($result1->value);
+        $var1->value = 3.175;
+        $var2->value = 3.183;
+        $result2 = $var1->equalRounded($var2, 3);
+        $this->assertTrue($result2->value);
+        
+        $var2->value = 3.1749;
+        $result3 = $var1->equalRounded($var2, 3);
+        $this->assertFalse($result3->value);
+
+        $var1->value = 1.68572;
+        $var2->value = 1.69;
+        $result4 = $var1->equalRounded($var2, 2, 'decimalPlaces');
+        $this->assertTrue($result4->value);
+        
+        $var2->value = 1.68432;
+        $result5 = $var1->equalRounded($var2, 2, 'decimalPlaces');
+        $this->assertFalse($result5->value);
+    } 
 
     public function testLT() {
         $variable1 = new Variable('single', 'integer', array('value' => 5));

@@ -44,7 +44,7 @@ class FunctionGenerator {
      * be a source of bugs if we had to remember to generate an empty array each time.
      * @param unknown_type $name
      * @param unknown_type $args
-     * @throws Exception
+     * @throws \Exception
      */
     public function __call($name, $args) {
         
@@ -211,6 +211,36 @@ class FunctionGenerator {
     }
     
     /*
+     * Support template variables in MathML
+     * 
+     * TODO: These appear to work, but needs checked
+     * TODO: We need to check whether the template variables are marked as mathVariables
+     */
+    public function ___mathml_mi($attrs, $children) {
+        return function($controller) use($attrs, $children) {
+            $varName = $children[0]->__invoke($controller);
+            if(isset($controller->template[$varName])) {
+                $result = '<mn>' . $controller->template[$varName]->value . '</mn>';
+            } else {
+                $result = '<mi>' . $varName . '</mi>';
+            }
+            return $result;
+        };
+    }
+    
+    public function ___mathml_ci($attrs, $children) {
+        return function($controller) use($attrs, $children) {
+            $varName = $children[0]->__invoke($controller);
+            if(isset($controller->template[$varName])) {
+                $result = '<cn>' . $controller->template[$varName]->value . '</cn>';
+            } else {
+                $result = '<ci>' . $varName . '</ci>';
+            }
+            return $result;
+        };
+    }
+    
+    /*
      * 8.2. Generalized Response Processing
     */
     
@@ -274,7 +304,7 @@ class FunctionGenerator {
     }
     
     public function _lookupOutcomeValue($attrs, $children) {
-        throw new Exception("Not implemented");
+        throw new \Exception("Not implemented");
     }
     
     /*
@@ -282,7 +312,7 @@ class FunctionGenerator {
     */
     
     public function _templateProcessing($attrs, $children) {
-        $this->processingFunction = function($controller) use($children) {
+        return function($controller) use($children) {
             foreach($children as $child) {
                 $child->__invoke($controller);
             }
@@ -618,15 +648,20 @@ class FunctionGenerator {
     }
     
     public function _equal($attrs, $children) {
-        throw new Exception("Not implemented");
+        throw new \Exception("Not implemented");
     }
     
     public function _equalRounded($attrs, $children) {
-        throw new Exception("Not implemented");
+        return function($controller) use ($attrs, $children) {
+            $val1 = $children[0]->__invoke($controller);
+            $val2 = $children[1]->__invoke($controller);
+    
+            return $val1->equalRounded($val2);
+        };
     }
     
     public function _inside($attrs, $children) {
-        throw new Exception("Not implemented");
+        throw new \Exception("Not implemented");
     }
     
     public function _lt($attrs, $children) {
@@ -666,11 +701,11 @@ class FunctionGenerator {
     }
     
     public function _durationLT($attrs, $children) {
-        throw new Exception("Not implemented");
+        throw new \Exception("Not implemented");
     }
     
     public function _durationGTE($attrs, $children) {
-        throw new Exception("Not implemented");
+        throw new \Exception("Not implemented");
     }
     
     public function _sum($attrs, $children) {
@@ -763,7 +798,7 @@ class FunctionGenerator {
     }
     
     public function _customOperator($attrs, $children) {
-        throw new Exception("Not implemented");
+        throw new \Exception("Not implemented");
     }
 
 }
