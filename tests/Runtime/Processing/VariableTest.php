@@ -179,6 +179,10 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue(Variable::or_($variable1, $variable1)->value);
         $this->assertTrue(Variable::or_($variable2, $variable1, $variable2)->value);
         $this->assertFalse(Variable::or_($variable2, $variable2)->value);
+        
+        // Check for null
+        $variable3 = new Variable('single', 'boolean');
+        $this->assertNull(Variable::or_($variable2, $variable3)->value);
     }
     
     public function testAnyN() {

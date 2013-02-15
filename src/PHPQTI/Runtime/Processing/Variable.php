@@ -401,18 +401,22 @@ class Variable {
 
     // Underscore at end because "or" is a reserved word
     public static function or_() {
-        $result = new Variable('single', 'boolean', array('value' => false));
+        $result = new Variable('single', 'boolean');
         $params = func_get_args();
         // Allow a single array as well as a parameter list
         if (count($params) == 1 && is_array($params[0])) {
             $params = $params[0];
         }
         foreach($params as $param) {
+            if($param->_isNull()) {
+                return $result;
+            }
             if ($param->value) {
                 $result->value = true;
                 return $result;
             }
         }
+        $result->value = false;
         return $result;
     }
 
