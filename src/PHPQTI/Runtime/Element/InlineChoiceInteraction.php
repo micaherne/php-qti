@@ -10,7 +10,12 @@ class InlineChoiceInteraction extends Element {
 
     public function __invoke($controller) {
         $variableName = $this->attrs['responseIdentifier'];
-        $result = "<select name=\"{$variableName}\" id=\"inlineChoiceInteraction_{$variableName}\" class=\"qti_inlineChoiceInteraction\">";
+        if (isset($this->attrs['required']) && $this->attrs['required'] == 'true') {
+            $required = ' required = "required" ';
+        } else {
+            $required = '';
+        }
+        $result = "<select name=\"{$variableName}\" id=\"inlineChoiceInteraction_{$variableName}\" class=\"qti_inlineChoiceInteraction\" $required>";
         // Empty choice
         $result .= "<option></option>";
 

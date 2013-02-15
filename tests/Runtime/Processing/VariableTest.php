@@ -296,12 +296,38 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         
     }
     
+    public function testIntegerDivide() {
+        $variable1 = new Variable('single', 'integer', array('value' => 243));
+        $variable2 = new Variable('single', 'integer', array('value' => 6));
+        $result1 = $variable1->integerDivide($variable2);
+        $this->assertEquals('40', $result1->getValue());
+        
+        $variable3 = new Variable('single', 'integer', array('value' => -243));
+        $result2 = $variable3->integerDivide($variable2);
+        $this->assertEquals('-41', $result2->getValue());
+        
+        // Check for null
+        $variable4 = new Variable('single', 'integer');
+        $result3 = $variable3->integerDivide($variable4);
+        $this->assertNull($result3->value);
+    }
+
     public function testIntegerModulus() {
-        $variable1 = new Variable('single', 'integer', array('value' => 5));
+        $variable1 = new Variable('single', 'integer', array('value' => 243));
         $this->assertEquals(0, $variable1->integerModulus($variable1)->value);
         
-        $variable2 = new Variable('single', 'integer', array('value' => 2));
-        $this->assertEquals(1, $variable1->integerModulus($variable2)->value);
+        $variable2 = new Variable('single', 'integer', array('value' => 6));
+        $result1 = $variable1->integerModulus($variable2);
+        $this->assertEquals('3', $result1->getValue());
+        
+        $variable3 = new Variable('single', 'integer', array('value' => -243));
+        $result2 = $variable3->integerModulus($variable2);
+        $this->assertEquals('-3', $result2->getValue());
+        
+        // Check for null
+        $variable4 = new Variable('single', 'integer');
+        $result3 = $variable3->integerModulus($variable4);
+        $this->assertNull($result3->value);
         
     }
     

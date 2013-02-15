@@ -782,8 +782,11 @@ class Variable {
     }
 
     public function integerDivide($othervariable) {
+        if ($this->_isNull() || $othervariable->_isNull()) {
+            return new Variable('single', 'integer');
+        }
         $result = $this->divide($othervariable);
-        $result->value = round($result->value);
+        $result->value = floor($result->value);
         return $result;
     }
 
