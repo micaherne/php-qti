@@ -845,10 +845,22 @@ class Variable {
 
     /**
      * Set the value of the variable
-     * @param Variable $value The value as a Variable
+     * @param Variable|array|string $value The value as a Variable
      */
     public function setValue($value) {
-        $this->value = $value->value;
+        if ($value instanceof Variable) {
+            $this->value = $value->value;
+        } else if (is_string($value)) {
+            if ($this->cardinality == 'single') {
+                $this->value = $value;
+            } else {
+                $this->value = array($value);
+            }
+        } else if (is_array($value) && !$this->cardinality == 'single') {
+            $this->value = $value;
+        } else {
+            throw new \Exception('invalid value');
+        }
     }
 
     public function getValue() {
