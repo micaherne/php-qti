@@ -220,7 +220,7 @@ class FunctionGenerator {
     public function ___mathml_mi($attrs, $children) {
         return function($controller) use($attrs, $children) {
             $varName = $children[0]->__invoke($controller);
-            if(isset($controller->template[$varName])) {
+            if(isset($controller->template[$varName]) && $controller->template[$varName]->mathVariable) {
                 $result = '<mn>' . $controller->template[$varName]->value . '</mn>';
             } else {
                 $result = '<mi>' . $varName . '</mi>';
@@ -232,7 +232,7 @@ class FunctionGenerator {
     public function ___mathml_ci($attrs, $children) {
         return function($controller) use($attrs, $children) {
             $varName = $children[0]->__invoke($controller);
-            if(isset($controller->template[$varName])) {
+            if(isset($controller->template[$varName]) && $controller->template[$varName]->mathVariable) {
                 $result = '<cn>' . $controller->template[$varName]->value . '</cn>';
             } else {
                 $result = '<ci>' . $varName . '</ci>';
@@ -639,9 +639,14 @@ class FunctionGenerator {
         return function($controller) use ($attrs, $children) {
             $val1 = $children[0]->__invoke($controller);
             $val2 = $children[1]->__invoke($controller);
-    
+            
+            if (isset($attrs['substring'])) {
+                $substring = $attrs['substring'];
+            } else {
+                $substring = 'false';
+            }
             // TODO: Missing substring attribute will probably break helper function
-            return $val1->stringMatch($val2, $attrs['caseSensitive'], $attrs['substring']);
+            return $val1->stringMatch($val2, $attrs['caseSensitive'], $substring);
         };
     }
     

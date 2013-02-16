@@ -4,7 +4,7 @@ Create new "not implemented" generator functions in FunctionGenerator for all re
 
 The value attribute on Variable is potentially flaky. It's generally down to calling code to make sure it's an array or a single value depending on the cardinality of the variable. I'd rather have this done with an accessor, although it would probably mean fixing hundreds of instances throughout the code. [DONE]
 
-Go through each implemented element in the spec and make sure the class / closure generator implements it fully. Add unit tests for each. Create a list of full/partial/non implementation of each.
+Go through each implemented element in the spec and make sure the class / closure generator implements it fully. Add unit tests for each. Create a list of full/partial/non implementation of each. [DONE]
 
 Get the existing interactions working soundly and implement as many of the unimplemented as possible.
 

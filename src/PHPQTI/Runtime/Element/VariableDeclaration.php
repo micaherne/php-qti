@@ -8,6 +8,12 @@ abstract class VariableDeclaration extends Element {
 	
 	public function __invoke($controller) {
 		$result = new Variable($this->attrs['cardinality'], $this->attrs['baseType']);
+	    if (isset($this->attrs['paramVariable']) && $this->attrs['paramVariable'] == 'true') {
+		    $result->paramVariable = true;
+		}
+	    if (isset($this->attrs['mathVariable']) && $this->attrs['mathVariable'] == 'true') {
+		    $result->mathVariable = true;
+		}
 		foreach($this->children as $child) {
 			if($child instanceof CorrectResponse) {
 				// Value is an array only if cardinality is not single

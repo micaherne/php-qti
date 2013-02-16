@@ -12,6 +12,8 @@ class Variable {
     public $correctResponseInterpretation = null;
     public $defaultValue = null;
     public $defaultValueInterpretation = null;
+    public $paramVariable = false;
+    public $mathVariable = false;
     public $mapping = null;
 
     /**

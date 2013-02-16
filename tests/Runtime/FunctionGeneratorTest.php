@@ -75,7 +75,7 @@ class FunctionGeneratorTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('openingGambit', $var->defaultValue);
 	}
 
-	public function testResponseDeclaration() {
+public function testResponseDeclaration() {
 	    $fg = new FunctionGenerator();
 	    $dom = new \DomDocument();
 	    $dom->loadXML('<responseDeclaration identifier="STORY" cardinality="multiple" baseType="identifier">
@@ -95,6 +95,20 @@ class FunctionGeneratorTest extends PHPUnit_Framework_TestCase {
 	    $this->assertEquals(array('john', 'paul', 'george', 'ringo'), $var->defaultValue);
 	    $this->assertEquals('The Beatles', $var->defaultValueInterpretation);
 	}
+	
+    public function testTemplateDeclaration() {
+	    $fg = new FunctionGenerator();
+	    $dom = new \DomDocument();
+	    $dom->loadXML('<templateDeclaration baseType="float" cardinality="single" identifier="fAns" mathVariable="true"
+        paramVariable="false"/>');
+	
+	    $func = $fg->fromXmlElement($dom->documentElement);
+	    $controller = new ItemController();
+	    $result = $func($controller);
+	    $var = $controller->template['fAns'];
+	    $this->assertEquals(false, $var->paramVariable);
+	    $this->assertEquals(true, $var->mathVariable);
+    }
 	
 	public function testVariable() {
 	    $xml = '<variable identifier="FEEDBACK"/>';
