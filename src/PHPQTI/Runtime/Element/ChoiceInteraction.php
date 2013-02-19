@@ -6,10 +6,11 @@ use PHPQTI\Runtime\Util\ChoiceIterator;
 
 class ChoiceInteraction extends Element {
 
-    /* TODO: We'd really like to tell the simpleChoice elements what type of
-     * input control they're to display in the constructor, but we don't have access to the
-    * variable declarations.
-    */
+    /* 
+     * This control will work without Javascript, except for the maxChoices and
+     * minChoices. Orientation is not implemented apart from being added to the 
+     * CSS classes and JS data attributes for use by clients
+     */
 
     public $simpleChoice = array();
     public $fixed = array(); // indices of simpleChoices with fixed set to true
@@ -17,8 +18,15 @@ class ChoiceInteraction extends Element {
 
     public function __invoke($controller) {
         $variableName = $this->attrs['responseIdentifier'];
-        $result = "<div id=\"choiceInteraction_{$variableName}\" class=\"qti_blockInteraction\"";
-        $result .= implode(' ', $this->_getDataAttributes(array('maxChoices', 'minChoices')));
+        // Add orientation (this is not used by any other code in the library, 
+        // but allows clients to use it if useful)
+        if(isset($this->attrs['orientation'])) {
+        	$orientationClass = 'qti_orientation_' . $orientation;
+        } else {
+        	$orientationClass = '';
+        }
+        $result = "<div id=\"choiceInteraction_{$variableName}\" class=\"qti_blockInteraction $orientationClass\"";
+        $result .= implode(' ', $this->_getDataAttributes(array('maxChoices', 'minChoices', 'orientation')));
         $result .= ">";
         // Work out what kind of HTML tag will be used for simpleChoices
         if (!isset($controller->response[$variableName])) {

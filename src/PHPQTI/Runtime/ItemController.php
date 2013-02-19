@@ -42,6 +42,10 @@ class ItemController {
 
     public $show_debugging = false; // do we show memory usage etc.?
 
+    /* The context is necessary for processing things like gaps in gapMatchInteraction
+     * where the interaction itself is unable to directly control the creation of the 
+     * child node, but needs to pass it some information.
+     */
     public $context = array(); // for passing contextual info (e.g. ancestor nodes)
 
     public function __construct() {

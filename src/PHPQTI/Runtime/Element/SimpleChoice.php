@@ -7,6 +7,19 @@ class SimpleChoice extends Element {
     public $interactionType = 'choiceInteraction';
 
     public function __invoke($controller) {
+    	// TODO: Do we need to check for non-existences here? Only hides if specifically hidden
+    	if (isset($this->attrs['templateIdentifier']) && isset($this->attrs['showHide'])) {
+    		$templateIdentifier = $this->attrs['templateIdentifier'];
+    		$showHide = $this->attrs['showHide'];;
+    		if(isset($controller->template[$templateIdentifier])) {
+    			$value = $controller->template[$templateIdentifier]->value;
+    			if((is_array($value) && in_array($this->attrs['identifier'], $value)) || ($value == $this->attrs['identifier'])) {
+    				if($showHide == 'hide') {
+    					return '';
+    				}
+    			}
+    		}
+    	}
         $result = "<span class=\"qti_simpleChoice\">\n";
         if ($this->interactionType == 'choiceInteraction') {
 
