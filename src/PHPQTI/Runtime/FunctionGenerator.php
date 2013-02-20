@@ -18,6 +18,9 @@
 
 namespace PHPQTI\Runtime;
 
+use PHPQTI\Runtime\Exception\ExitResponseException;
+use PHPQTI\Runtime\Exception\ExitTemplateException;
+
 use PHPQTI\Runtime\Processing\Variable;
 use PHPQTI\Runtime\Processing\ProcessingException;
 use PHPQTI\Runtime\Exception\NotImplementedException;
@@ -247,9 +250,14 @@ class FunctionGenerator {
     
     public function _responseProcessing($attrs, $children) {
         return function($controller) use($children) {
-            foreach($children as $child) {
-                $child->__invoke($controller);
-            }
+        	try {
+	            foreach($children as $child) {
+	                $child->__invoke($controller);
+	            }
+        	} catch (ExitResponseException $e) {
+        		// stop processing immediately
+        		return;
+        	}
         };
     }
     
@@ -313,9 +321,14 @@ class FunctionGenerator {
     */
     
     public function _templateProcessing($attrs, $children) {
-        return function($controller) use($children) {
-            foreach($children as $child) {
-                $child->__invoke($controller);
+    	return function($controller) use($children) {
+    		try {
+	    		foreach($children as $child) {
+	                $child->__invoke($controller);
+	            }
+            } catch (ExitTemplateException $e) {
+            	// stop processing immediately
+            	return;
             }
         };
     }
@@ -818,11 +831,15 @@ class FunctionGenerator {
      */
 
     public function _exitResponse($attrs, $children) {
-        throw new NotImplementedException('exitResponse');
+    	return function($controller) use ($attrs, $children) {
+        	throw new ExitResponseException();
+    	};
     }
     
     public function _exitTemplate($attrs, $children) {
-        throw new NotImplementedException('exitTemplate');
+        return function($controller) use ($attrs, $children) {
+        	throw new ExitTemplateException();
+    	};
     }
     
     public function _exitTest($attrs, $children) {

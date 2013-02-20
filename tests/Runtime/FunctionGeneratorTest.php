@@ -167,4 +167,48 @@ public function testResponseDeclaration() {
 	    
 	}
 	
+function testExitResponse() {
+		$xml = '<responseProcessing>
+				<setOutcomeValue identifier="SCORE">
+                <baseValue baseType="identifier">before</baseValue>
+            </setOutcomeValue>
+				<exitResponse/>
+				<setOutcomeValue identifier="SCORE">
+                <baseValue baseType="identifier">after</baseValue>
+            </setOutcomeValue>
+				</responseProcessing>';
+
+		$fg = new FunctionGenerator();
+		$dom = new \DomDocument();
+		$dom->loadXML($xml);
+		 
+		$func = $fg->fromXmlElement($dom->documentElement);
+		$controller = new ItemController();
+		$controller->outcome['SCORE'] = new Variable('single', 'identifier', array('value' => 'initial'));
+		$func($controller);
+		$this->assertEquals('before', $controller->outcome['SCORE']->value);
+	}
+	
+	function testExitTemplate() {
+		$xml = '<templateProcessing>
+				<setTemplateValue identifier="SCORE">
+                <baseValue baseType="identifier">before</baseValue>
+            </setTemplateValue>
+				<exitTemplate/>
+				<setTemplateValue identifier="SCORE">
+                <baseValue baseType="identifier">after</baseValue>
+            </setTemplateValue>
+				</templateProcessing>';
+	
+		$fg = new FunctionGenerator();
+		$dom = new \DomDocument();
+		$dom->loadXML($xml);
+			
+		$func = $fg->fromXmlElement($dom->documentElement);
+		$controller = new ItemController();
+		$controller->template['SCORE'] = new Variable('single', 'identifier', array('value' => 'initial'));
+		$func($controller);
+		$this->assertEquals('before', $controller->template['SCORE']->value);
+	}
+	
 }
