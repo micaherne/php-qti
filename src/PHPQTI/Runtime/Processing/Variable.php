@@ -8,6 +8,8 @@ class Variable {
     public $type;
     // For response vars, QTI has a candidateResponse wrapper for the value - any reason to implement?
     public $value;
+    // For record variables, we need an empty array of fields
+    public $field = array();
     public $correctResponse = null;
     public $correctResponseInterpretation = null;
     public $defaultValue = null;
@@ -24,7 +26,7 @@ class Variable {
      */
     public function __construct($cardinality, $type, $params = array()) {
         $this->cardinality = $cardinality;
-        $this->type = $type;
+        $this->type = $type; 
 
         $this->value = null;
         if (isset($params['value'])) {
@@ -877,6 +879,25 @@ class Variable {
 
     public function getValue() {
         return $this->value;
+    }
+    
+    /*
+     * Getter for record type variables. For these variables, 
+     * the value array is an associative one, and values are other
+     * single cardinality variables (they have to be because we 
+     * need to retain the baseType of the value - see "value" element
+     * definition in spec).
+     */
+    public function getFieldValue($fieldid) {
+    	if (isset($this->field[$fieldid])) {
+    		return $this->field[$fieldid];
+    	} else {
+    		return null;
+    	}
+    }
+    
+    public function setFieldValue($fieldid, Variable $variable) {
+    	$this->field[$fieldid] = $variable;
     }
 
     /**

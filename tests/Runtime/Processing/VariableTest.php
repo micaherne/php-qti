@@ -412,6 +412,16 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         //$this->assertTrue($variable1->inside('poly', '-1,-1,-1,1,1,1,1,-1')->value);
         
     }
+    
+    /*
+     * TODO: I can't work out if there's a way to construct an XML fragement that will
+     * create a variable of type record with actual values.
+     */
+    public function testFieldValue() {
+    	$variable1 = new Variable('record', null);
+    	$variable1->setFieldValue('nim', new Variable('single', 'identifier', array('value' => 'bim')));
+    	$this->assertEquals('bim', $variable1->getFieldValue('nim')->value);
+    }
 }
 
 
