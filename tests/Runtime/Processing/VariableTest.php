@@ -413,14 +413,48 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         
     }
     
-    /*
-     * TODO: I can't work out if there's a way to construct an XML fragement that will
-     * create a variable of type record with actual values.
-     */
     public function testFieldValue() {
     	$variable1 = new Variable('record', null);
     	$variable1->setFieldValue('nim', new Variable('single', 'identifier', array('value' => 'bim')));
     	$this->assertEquals('bim', $variable1->getFieldValue('nim')->value);
+    }
+    
+    public function testGCD() {
+    	$variable1 = new Variable('single', 'integer', array('value' => 9));
+    	$variable2 = new Variable('single', 'integer', array('value' => 12));
+    	$variable3 = Variable::gcd($variable1, $variable2);
+    	$this->assertEquals('3', $variable3->value);
+    	$variable4 = new Variable('single', 'integer', array('value' => 9));
+    	$variable5 = Variable::gcd($variable1, $variable2, $variable4);
+    	$this->assertEquals('3', $variable3->value);
+    	// Check for null
+    	$variable6 = new Variable('single', 'integer');
+    	$result3 = Variable::gcd($variable1, $variable2, $variable6);
+    	$this->assertNull($variable6->value);
+    	$this->assertNull($result3->value);
+    	
+    	// Check all zero
+    	$variable7 = new Variable('single', 'integer', array('value' => 0));
+    	$this->assertEquals(0, Variable::gcd($variable7, $variable7, $variable7, $variable7)->value);
+    }
+    
+    public function testLCM() {
+    	$variable1 = new Variable('single', 'integer', array('value' => 9));
+    	$variable2 = new Variable('single', 'integer', array('value' => 12));
+    	$variable3 = Variable::lcm($variable1, $variable2);
+    	$this->assertEquals('36', $variable3->value);
+    	$variable4 = new Variable('single', 'integer', array('value' => 9));
+    	$variable5 = Variable::lcm($variable1, $variable2, $variable4);
+    	$this->assertEquals('36', $variable3->value);
+    	// Check for null
+    	$variable6 = new Variable('single', 'integer');
+    	$result3 = Variable::lcm($variable1, $variable2, $variable6);
+    	$this->assertNull($variable6->value);
+    	$this->assertNull($result3->value);
+    	 
+    	// Check all zero
+    	$variable7 = new Variable('single', 'integer', array('value' => 0));
+    	$this->assertEquals(0, Variable::lcm($variable7, $variable7, $variable7, $variable7)->value);
     }
 }
 

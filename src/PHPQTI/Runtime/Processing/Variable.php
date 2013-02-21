@@ -196,6 +196,104 @@ class Variable {
     /*
      * 15.3 Operators
     */
+    public static function gcd() {
+    	$params = func_get_args();
+    	$vals = array();
+    	foreach($params as $param) {
+    		if (is_array($param->getValue())) {
+    			$vals = array_merge($param->getValue());
+    		} else {
+    			$vals[] = $param->getValue();
+    		}
+    	}
+    	
+    	$result = new Variable('single', 'integer');
+    	
+    	if (count($vals) == 1) {
+    		// do this to catch nulls
+    		$result->value = Variable::_getGCD(0, $vals[0]);
+    		return $result;
+    	}
+    	// Now find the gcd of the $vals array
+    	$gcd = Variable::_getGCD($vals[0], $vals[1]);
+    	if (is_null($gcd)) {
+    		return $result;
+    	}
+    	
+    	for ($i = 2; $i < count($vals); $i++) { 
+    		$gcd = Variable::_getGCD($gcd, $vals[$i]);
+    		if (is_null($gcd)) {
+    			return $result;
+    		} 
+    	}
+    	
+    	$result->value = $gcd;
+    	return $result;
+    }
+    
+    // Blagged from stackoverflow - not necessarily good
+    private static function _getGCD($a, $b)
+    {
+    	if(is_null($a) || is_null($b) || !is_numeric($a) || !is_numeric($b)) {
+    		return null;
+    	}
+    	
+    	while ($b != 0)
+    	{
+    		$m = $a % $b;
+    		$a = $b;
+    		$b = $m;
+    	}
+    	return $a;
+    }
+    
+    public static function lcm() {
+    	$params = func_get_args();
+    	$vals = array();
+    	foreach($params as $param) {
+    		if (is_array($param->getValue())) {
+    			$vals = array_merge($param->getValue());
+    		} else {
+    			$vals[] = $param->getValue();
+    		}
+    	}
+    	 
+    	$result = new Variable('single', 'integer');
+    	 
+    	if (count($vals) == 1) {
+    		// do this to catch nulls
+    		if (!is_null($vals[0])) {
+    			$result->value = $vals[0];
+    		}
+    		return $result;
+    	}
+    	
+    	if (in_array(null, $vals)) {
+    		$result->value = null;
+    		return $result;
+    	}
+    	
+    	if (in_array(0, $vals)) {
+    		$result->value = 0;
+    		return $result;
+    	}
+    	 
+    	$lcm = 0;
+    	foreach($vals as $val) {
+    		if(is_null($val)) {
+    			return $result;
+    		} else if ($lcm == 0) {
+    			$lcm = $val;
+    		} else {
+    			$gcd = Variable::_getGCD($val, $lcm);
+    			$lcm = ($val / $gcd) * $lcm;
+    		}
+    	}
+    	 
+    	$result->value = $lcm;
+    	return $result;
+    }
+    
     public static function multiple() {
         $params = func_get_args();
 
