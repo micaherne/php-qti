@@ -16,22 +16,24 @@ abstract class VariableDeclaration extends Element {
 		}
 		foreach($this->children as $child) {
 			if($child instanceof CorrectResponse) {
+			    $correctResponseValues = $child($controller); // 5.3 compatibility
 				// Value is an array only if cardinality is not single
 				if($this->attrs['cardinality'] == 'single') {
-					$result->correctResponse = $child($controller)[0];
+					$result->correctResponse = $correctResponseValues[0];
 				} else {
-					$result->correctResponse = $child($controller);
+					$result->correctResponse = $correctResponseValues;
 				}
 				// interpretation attribute
 				if(isset($child->attrs['interpretation'])) {
 				    $result->correctResponseInterpretation = $child->attrs['interpretation'];
 				}
 			} else if ($child instanceof DefaultValue) {
+			    $defaultValueValues = $child($controller); // 5.3 compatibility
 				// defaultValue is an array only if cardinality is not single
 				if($this->attrs['cardinality'] == 'single') {
-					$result->defaultValue = $child($controller)[0];
+					$result->defaultValue = $defaultValueValues[0];
 				} else {
-					$result->defaultValue = $child($controller);
+					$result->defaultValue = $defaultValueValues;
 				}
 				// interpretation attribute
 				if(isset($child->attrs['interpretation'])) {
