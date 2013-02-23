@@ -469,6 +469,15 @@ class FunctionGenerator {
         };
     }
     
+    public function _mathConstant($attrs, $children) {
+        return function($controller) use ($attrs, $children) {
+            $name = $attrs['name'];
+            $result = new Variable('single', 'float');
+            $result->setValue(Variable::mathConstant($name));
+            return $result;
+        };
+    }
+    
     public function _null($attrs, $children) {
         // Create as single identifier, although it can be matched against any other null
         return function($controller) use ($attrs, $children) {
@@ -1032,10 +1041,6 @@ class FunctionGenerator {
     
     public function _matchTableEntry($attrs, $children) {
         throw new NotImplementedException('matchTableEntry');
-    }
-    
-    public function _mathConstant($attrs, $children) {
-        throw new NotImplementedException('mathConstant');
     }
     
     public function _numberCorrect($attrs, $children) {

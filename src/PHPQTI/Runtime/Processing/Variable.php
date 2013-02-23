@@ -140,6 +140,20 @@ class Variable {
 
         return new Variable('single', 'float', array('value' => $resultvalue));
     }
+    
+    public static function mathConstant($name) {
+        switch ($name) {
+            case 'pi':
+                return pi();
+                break;
+            case 'e':
+                return exp(1);
+                break;
+            default:
+                // TODO: Not defined in spec
+                return;
+        }
+    }
 
     // TODO: This should be deprecated by the more specific methods
     // TODO: Make this work for things other than strings and arrays

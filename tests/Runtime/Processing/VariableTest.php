@@ -391,6 +391,12 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(9, $variable3->mapResponse()->value);
         
     }
+
+    public function testMathConstant() {
+        $result1 = Variable::mathConstant('pi');
+        $this->assertLessThan(3.15, $result1);
+        $this->assertGreaterThan(3.13, $result1);
+    }
     
     public function testInside() {
         $variable1 = new Variable('single', 'point', array('value' => '0 0'));
