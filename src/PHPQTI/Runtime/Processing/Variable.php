@@ -154,6 +154,39 @@ class Variable {
                 return;
         }
     }
+    
+    public static function max() {
+        $vars = func_get_args();
+        $result = new Variable('single', 'float');
+        $vals = array();
+        $allIntegers = true;
+        foreach($vars as $var) {
+            if ($var->_isNull()) {
+                return $result;
+            }
+            if ($var->type != 'integer') {
+                $allIntegers = false;
+            }
+            if (is_array($var->value)) {
+                $vals = array_merge($vals, $var->value);
+            } else {
+                $vals[] = $var->value;
+            }
+        }
+        
+        // Check for non-numeric - could be better implemented
+        foreach($vals as $val) {
+            if (!is_numeric($val)) {
+                return $result;
+            }
+        }
+        $result->value = max($vals);
+        if ($allIntegers) {
+            $result->type = 'integer';
+        }
+        
+        return $result;
+    }
 
     // TODO: This should be deprecated by the more specific methods
     // TODO: Make this work for things other than strings and arrays

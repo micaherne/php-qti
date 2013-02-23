@@ -402,6 +402,37 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         $this->assertGreaterThan(2.70, $result2);
     }
     
+    /**
+     * Test max function. Full coverage.
+     */
+    public function testMax() {
+        $variable1 = new Variable('single', 'integer', array('value' => 15));
+        $variable2 = new Variable('multiple', 'integer', array('value' => array(12, 17)));
+        $result1 = Variable::max($variable1, $variable2);
+        $this->assertEquals('integer', $result1->type);
+        $this->assertEquals('single', $result1->cardinality);
+        $this->assertEquals(17, $result1->value);
+        
+        $variable3 = new Variable('multiple', 'float', array('value' => array(12, 17)));
+        $result2 = Variable::max($variable1, $variable3);
+        $this->assertEquals('float', $result2->type);
+        $this->assertEquals('single', $result2->cardinality);
+        $this->assertEquals(17, $result2->value);
+        
+        $variable4 = new Variable('multiple', 'integer');
+        $result3 = Variable::max($variable1, $variable4);
+        $this->assertEquals('float', $result3->type);
+        $this->assertEquals('single', $result3->cardinality);
+        $this->assertNull($result3->value);
+        
+        $variable5 = new Variable('single', 'string', array('value' => 'hippopotamus'));
+        $result4 = Variable::max($variable1, $variable5);
+        $this->assertEquals('float', $result4->type);
+        $this->assertEquals('single', $result4->cardinality);
+        $this->assertNull($result4->value);
+        
+    }
+    
     public function testInside() {
         $variable1 = new Variable('single', 'point', array('value' => '0 0'));
         
