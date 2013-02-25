@@ -211,4 +211,30 @@ public function testResponseDeclaration() {
 		$this->assertEquals('before', $controller->template['SCORE']->value);
 	}
 	
+	function testRandomInteger() {
+	    $xml = '<randomInteger max="4" min="1"/>';
+	    $fg = new FunctionGenerator();
+	    $dom = new \DomDocument();
+	    $dom->loadXML($xml);
+	    	
+	    $func = $fg->fromXmlElement($dom->documentElement);
+	    $controller = new ItemController();
+	    
+	    // Run it ten times
+	    for($i = 0; $i < 10; $i++) {
+	        $result1 = $func($controller);
+	        $this->assertGreaterThanOrEqual(1, $result1->value);
+	        $this->assertLessThanOrEqual(4, $result1->value);
+	        $results1[$result1->value] = 1;
+	    }
+	    
+	    $xml = '<randomInteger max="{TEST}" min="17"/>';
+	    $dom->loadXML($xml);
+	    $func = $fg->fromXmlElement($dom->documentElement);
+	     
+	    $controller->template['TEST'] = new Variable('single', 'integer', array('value' => 17));
+	    $result2 = $func($controller);
+	    $this->assertEquals(17, $result2->value);
+	}
+	
 }

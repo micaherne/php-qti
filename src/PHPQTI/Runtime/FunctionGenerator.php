@@ -488,13 +488,13 @@ class FunctionGenerator {
     }
     
     public function _randomInteger($attrs, $children) {
-        return function($controller) use ($attrs, $children) {
-            $min = $attrs['min'];
-            $max = $attrs['max'];
-            $step = isset($attrs['step']) ? $attrs['step'] : 1;
+        return function(ItemController $controller) use ($attrs, $children) {
+            $min = $controller->valueOrVariable($attrs['min']);
+            $max = $controller->valueOrVariable($attrs['max']);
+            $step = isset($attrs['step']) ? $controller->valueOrVariable($attrs['step']) : 1;
     
             $offsetmax = intval($max/$step);
-            $value = $min + mt_rand(0, $offsetmax);
+            $value = $min + mt_rand(0, $offsetmax - $min);
             return new Variable('single', 'integer', array(
                     'value' => $value
             ));
@@ -503,9 +503,9 @@ class FunctionGenerator {
     
     public function _randomFloat($attrs, $children) {
         return function($controller) use ($attrs, $children) {
-            $min = $attrs['min'];
-            $max = $attrs['max'];
-    
+            $min = $controller->valueOrVariable($attrs['min']);
+            $max = $controller->valueOrVariable($attrs['max']);
+            
             $value = $randomfloat = $min + mt_rand() / mt_getrandmax() * ($max - $min);
             return new Variable('single', 'float', array(
                     'value' => $value
