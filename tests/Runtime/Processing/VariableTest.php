@@ -231,13 +231,38 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         $this->assertFalse($variable1->patternMatch('%\d')->value);
     }
     
-    /* public function testEqual() {
-        // not implemented yet
-    } */
+    public function testEqual() {
+        $variable1 = new Variable('single', 'integer', array('value' => 56));
+        $variable2 = new Variable('single', 'integer', array('value' => 12));
+        $this->assertTrue($variable1->equal($variable1)->value);
+        $this->assertTrue($variable2->equal($variable2)->value);
+        $this->assertFalse($variable1->equal($variable2)->value);
+        $this->assertFalse($variable2->equal($variable1)->value);
+        
+        // absolute mode
+        $this->assertFalse($variable1->equal($variable2, 'absolute', 5)->value);
+        $this->assertTrue($variable1->equal($variable2, 'absolute', 50)->value);
+        $this->assertTrue($variable1->equal($variable2, 'absolute', 44)->value);
+        $this->assertFalse($variable1->equal($variable2, 'absolute', 44, false)->value);
+        $this->assertTrue($variable2->equal($variable1, 'absolute', 44, false)->value);
+        $this->assertTrue($variable2->equal($variable1, 'absolute', 44, false, true)->value);
+        $this->assertFalse($variable2->equal($variable1, 'absolute', 44, false, false)->value);
+        
+        // relative mode
+        $variable3 = new Variable('single', 'integer', array('value' => 10));
+        $variable4 = new Variable('single', 'integer', array('value' => 5));
+        $this->assertTrue($variable3->equal($variable4, 'relative', 50)->value);
+        $this->assertFalse($variable3->equal($variable4, 'relative', 50, false)->value);
+        $this->assertFalse($variable4->equal($variable3, 'relative', 50)->value);
+        $this->assertFalse($variable4->equal($variable3, 'relative', 50, true, false)->value);
+        
+        // tolerance array
+        $this->assertTrue($variable3->equal($variable4, 'relative', array(50, 0))->value);
+        
+    }
     
     /* 
-     * This is the test from the spec, but I haven't managed to implement
-     * the function yet!
+     * This is the test from the spec.
      * */
       public function testEqualRounded() {
         // examples from spec

@@ -729,8 +729,71 @@ class Variable {
      * 
      * Implementing as per my understanding, so may not be completely accurate!
      */
-    public function equal() {
-        throw new \Exception("Not implemented");
+    public function equal(Variable $other, $toleranceMode = 'exact', $tolerance = null, $includeLowerBound = true, $includeUpperBound = true) {
+    $result = new Variable('single', 'boolean');
+        if($this->_isNull() || $other->_isNull()) {
+            return $result;
+        }
+        if ($toleranceMode == 'exact') {
+            $result->value = $this->value == $other->value;
+            return $result;
+        } else {
+            if (is_null($tolerance)) {
+                throw new \Exception("tolerance must be provided");
+            }
+            if (is_array($tolerance)) {
+                $t0 = $tolerance[0];
+                $t1 = $tolerance[1];
+            } else {
+                $t0 = $tolerance;
+                $t1 = $tolerance;
+            }
+            
+            $result->setValue(true);
+            
+            if ($toleranceMode == 'absolute') {
+                if ($includeLowerBound) {
+                    if ($other->value < $this->value - $t0) {
+                        $result->setValue(false);
+                    }
+                } else {
+                    if ($other->value <= $this->value - $t0) {
+                        $result->setValue(false);
+                    }
+                }
+                if ($includeUpperBound) {
+                    if ($other->value > $this->value + $t1) {
+                        $result->setValue(false);
+                    }
+                } else {
+                    if ($other->value >= $this->value + $t1) {
+                        $result->setValue(false);
+                    }
+                }
+            } else if ($toleranceMode == 'relative') {
+                if ($includeLowerBound) {
+                    if ($other->value < ($this->value * (1  - $t0 / 100))) {
+                        $result->setValue(false);
+                    }
+                } else {
+                    if ($other->value <= ($this->value * (1  - $t0 / 100))) {
+                        $result->setValue(false);
+                    }
+                }
+                if ($includeUpperBound) {
+                    if ($other->value > ($this->value * (1  + $t1 / 100))) {
+                        $result->setValue(false);
+                    }
+                } else {
+                    if ($other->value >= ($this->value * (1  + $t1 / 100))) {
+                        $result->setValue(false);
+                    }
+                }
+            }
+            
+            return $result;
+        }
+        
     }
 
     /**
@@ -1037,12 +1100,12 @@ class Variable {
 
     /**
      * Set the value of the variable
-     * @param Variable|array|string $value The value as a Variable
+     * @param Variable|array|string|boolean $value The value as a Variable
      */
     public function setValue($value) {
         if ($value instanceof Variable) {
             $this->value = $value->value;
-        } else if (is_string($value)) {
+        } else if (is_string($value) || is_bool($value)) {
             if ($this->cardinality == 'single') {
                 $this->value = $value;
             } else {
