@@ -249,7 +249,7 @@ class ItemController {
     public function valueOrVariable($value) {
         $matches = array();
         if (preg_match('/^\{(\w*)\}$/', $value, $matches)) {
-        if (isset($this->template[$matches[1]])) {
+            if (isset($this->template[$matches[1]])) {
                 return $this->template[$matches[1]]->value;
             } else if (isset($this->outcome[$matches[1]])) {
                 return $this->outcome[$matches[1]]->value;

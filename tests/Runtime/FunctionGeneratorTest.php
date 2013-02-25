@@ -167,7 +167,7 @@ public function testResponseDeclaration() {
 	    
 	}
 	
-function testExitResponse() {
+    function testExitResponse() {
 		$xml = '<responseProcessing>
 				<setOutcomeValue identifier="SCORE">
                 <baseValue baseType="identifier">before</baseValue>
