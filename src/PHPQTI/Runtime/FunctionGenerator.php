@@ -521,6 +521,36 @@ class FunctionGenerator {
     /*
      * 15.3. Operators
     */
+    public function _mathOperator($attrs, $children) {
+        return function($controller) use ($attrs, $children) {
+            $vars = array();
+            foreach($children as $child) {
+                $vars[] = $child->__invoke($controller);
+            }
+            return Variable::mathOperator($attrs['name'], $vars);
+        };
+    }
+    
+    public function _max($attrs, $children) {
+        return function($controller) use ($attrs, $children) {
+            $vars = array();
+            foreach($children as $child) {
+                $vars[] = $child->__invoke($controller);
+            }
+            return Variable::max( $vars);
+        };
+    }
+
+    public function _min($attrs, $children) {
+        return function($controller) use ($attrs, $children) {
+            $vars = array();
+            foreach($children as $child) {
+                $vars[] = $child->__invoke($controller);
+            }
+            return Variable::min( $vars);
+        };
+    }
+    
     public function _multiple($attrs, $children) {
         return function($controller) use ($attrs, $children) {
             $vars = array();
@@ -919,20 +949,8 @@ class FunctionGenerator {
         throw new NotImplementedException('matchTable');
     }
     
-    public function _mathOperator($attrs, $children) {
-        throw new NotImplementedException('mathOperator');
-    }
-    
-    public function _max($attrs, $children) {
-        throw new NotImplementedException('max');
-    }
-    
     public function _mediaInteraction($attrs, $children) {
         throw new NotImplementedException('mediaInteraction');
-    }
-    
-    public function _min($attrs, $children) {
-        throw new NotImplementedException('min');
     }
     
     public function _ordering($attrs, $children) {

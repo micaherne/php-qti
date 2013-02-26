@@ -261,6 +261,12 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         
     }
     
+    public function testRoundTo() {
+        $var1 = new Variable('single', 'float');
+        $var1->value = 3.175;
+        $this->assertEquals(3.18, $var1->roundTo(3)->getValue());
+    }
+    
     /* 
      * This is the test from the spec.
      * */

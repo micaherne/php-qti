@@ -176,29 +176,16 @@ class Variable {
         
         switch($name) {
             case 'sin':
-                $result->value = sin($vars[1]);
+                $result->value = sin($vars[1]->getValue());
                 break;
             case 'cos':
-                $result->value = cos($vars[1]);
+                $result->value = cos($vars[1]->getValue());
                 break;
             case 'tan':
-                $result->value = tan($vars[1]);
+                $result->value = tan($vars[1]->getValue());
                 break;
-            case 'sec':
-                throw new \NotImplementedException("mathOperator:sec");
-            case 'csc':
-                throw new \NotImplementedException("mathOperator:csc");
-            case 'cot':
-                throw new \NotImplementedException("mathOperator:cot");
-            case 'asin':
-                $result->value = asin($vars[1]);
-                break;
-            case 'acos':
-                $result->value = acos($vars[1]);
-                break;
-            case 'atan':
-                $result->value = atan($vars[1]);
-                break;
+            default:
+                throw new NotImplementedException('mathOperator:' . $name);
         }
         
         return $result;
@@ -844,6 +831,26 @@ class Variable {
         }
         
     }
+    
+    public function roundTo($figures, $roundingMode='significantFigures') {
+        $result = new Variable('single', 'float');
+        
+        if($this->_isNull()) {
+            return $result;
+        }
+        if ($roundingMode == 'significantFigures') {
+            $resultValue = $this->value * pow(10, $figures - 1);
+            $resultValue = round($resultValue, 0, PHP_ROUND_HALF_UP);
+            $resultValue /= pow(10, $figures - 1);
+            $result->value = $resultValue;
+            return $result;
+        } else if ($roundingMode == 'decimalPlaces') {
+            $thisRounded = round($this->value, $figures, PHP_ROUND_HALF_UP);
+            $result->value = $thisRounded;
+            return $result;
+        }
+        throw new \Exception("Invalid rounding mode $roundingMode. Only significantFigures or decimalPlaces supported.");
+    }
 
     /**
      * Check if two variables are the same if rounded.
@@ -862,22 +869,8 @@ class Variable {
         if($this->_isNull() || $other->_isNull()) {
             return $result;
         }
-        if ($roundingMode == 'significantFigures') {
-            $figuresThis = $this->value * pow(10, $figures - 1);
-            $figuresThis = round($figuresThis, 0, PHP_ROUND_HALF_UP);
-            $figuresThis /= pow(10, $figures);
-            $figuresOther = $other->value * pow(10, $figures - 1);
-            $figuresOther = round($figuresOther, 0, PHP_ROUND_HALF_UP);
-            $figuresOther /= pow(10, $figures);
-            $result->value = ($figuresThis == $figuresOther);
-            return $result;
-        } else if ($roundingMode == 'decimalPlaces') {
-            $thisRounded = round($this->value, $figures, PHP_ROUND_HALF_UP);
-            $otherRounded = round($other->value, $figures, PHP_ROUND_HALF_UP);
-            $result->value = ($thisRounded == $otherRounded);
-            return $result;
-        }
-        throw new \Exception("Invalid rounding mode $roundingMode. Only significantFigures or decimalPlaces supported.");
+        $result->value = ($this->roundTo($figures, $roundingMode) == $other->roundTo($figures, $roundingMode));
+        return $result;
     }
 
     // TODO: Implement poly (and maybe ellipse, although deprecated)
