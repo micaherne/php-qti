@@ -332,6 +332,12 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         
     }
     
+    public function testProduct() {
+        $variable1 = new Variable('single', 'integer', array('value' => 2));
+        $variable2 = new Variable('single', 'integer', array('value' => -16));
+        $this->assertEquals(-32, Variable::product($variable1, $variable2)->value);
+    }
+    
     public function testIntegerDivide() {
         $variable1 = new Variable('single', 'integer', array('value' => 243));
         $variable2 = new Variable('single', 'integer', array('value' => 6));
@@ -531,20 +537,20 @@ class VariableTest extends PHPUnit_Framework_TestCase {
     public function testGCD() {
     	$variable1 = new Variable('single', 'integer', array('value' => 9));
     	$variable2 = new Variable('single', 'integer', array('value' => 12));
-    	$variable3 = Variable::gcd($variable1, $variable2);
+    	$variable3 = Variable::gcd(array($variable1, $variable2));
     	$this->assertEquals('3', $variable3->value);
     	$variable4 = new Variable('single', 'integer', array('value' => 9));
-    	$variable5 = Variable::gcd($variable1, $variable2, $variable4);
+    	$variable5 = Variable::gcd(array($variable1, $variable2, $variable4));
     	$this->assertEquals('3', $variable3->value);
     	// Check for null
     	$variable6 = new Variable('single', 'integer');
-    	$result3 = Variable::gcd($variable1, $variable2, $variable6);
+    	$result3 = Variable::gcd(array($variable1, $variable2, $variable6));
     	$this->assertNull($variable6->value);
     	$this->assertNull($result3->value);
     	
     	// Check all zero
     	$variable7 = new Variable('single', 'integer', array('value' => 0));
-    	$this->assertEquals(0, Variable::gcd($variable7, $variable7, $variable7, $variable7)->value);
+    	$this->assertEquals(0, Variable::gcd(array($variable7, $variable7, $variable7, $variable7))->value);
     }
     
     public function testLCM() {

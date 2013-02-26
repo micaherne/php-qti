@@ -314,14 +314,13 @@ class Variable {
     /*
      * 15.3 Operators
     */
-    public static function gcd() {
-    	$params = func_get_args();
+    public static function gcd($params) {
     	$vals = array();
     	foreach($params as $param) {
-    		if (is_array($param->getValue())) {
-    			$vals = array_merge($param->getValue());
+    		if (is_array($param->value)) {
+    			$vals = array_merge($param->value);
     		} else {
-    			$vals[] = $param->getValue();
+    			$vals[] = $param->value;
     		}
     	}
     	
@@ -1024,9 +1023,8 @@ class Variable {
         if (count($params) == 1 && is_array($params[0])) {
             $params = $params[0];
         }
-        $result = clone($params[0]); // There should always be one
-        $result->value = 0;
-
+        $result = clone(array_shift($params)); // There should always be one
+        
         foreach($params as $param) {
             if($param->_isNull()) {
                 $result->value = null;

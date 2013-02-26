@@ -22,6 +22,7 @@ use PHPQTI\Runtime\ItemController;
 
 use PHPQTI\Runtime\Exception\ExitResponseException;
 use PHPQTI\Runtime\Exception\ExitTemplateException;
+use PHPQTI\Runtime\Exception\TemplateConditionException;
 
 use PHPQTI\Runtime\Processing\Variable;
 use PHPQTI\Runtime\Processing\ProcessingException;
@@ -231,6 +232,7 @@ class FunctionGenerator {
     public function ___mathml_mi($attrs, $children) {
         return function($controller) use($attrs, $children) {
             $varName = $children[0]->__invoke($controller);
+            $varName = trim($varName);
             if(isset($controller->template[$varName]) && $controller->template[$varName]->mathVariable) {
                 $result = '<mn>' . $controller->template[$varName]->value . '</mn>';
             } else {
@@ -243,6 +245,7 @@ class FunctionGenerator {
     public function ___mathml_ci($attrs, $children) {
         return function($controller) use($attrs, $children) {
             $varName = $children[0]->__invoke($controller);
+            $varName = trim($varName);
             if(isset($controller->template[$varName]) && $controller->template[$varName]->mathVariable) {
                 $result = '<cn>' . $controller->template[$varName]->value . '</cn>';
             } else {
@@ -337,6 +340,9 @@ class FunctionGenerator {
             } catch (ExitTemplateException $e) {
             	// stop processing immediately
             	return;
+            } catch (TemplateConditionException $e) {
+                // restart template processing
+                $controller->doTemplateCondition();
             }
         };
     }
@@ -347,6 +353,18 @@ class FunctionGenerator {
                 $result = $child->__invoke($controller);
                 if ($result->value === true) {
                     return;
+                }
+            }
+        };
+    }
+    
+
+    public function _templateConstraint($attrs, $children) {
+        return function($controller) use ($attrs, $children) {
+            foreach($children as $child) {
+                $result = $child->__invoke($controller);
+                if ($result->value === true) {
+                    throw new TemplateConditionException();
                 }
             }
         };
@@ -731,10 +749,12 @@ class FunctionGenerator {
     public function _equal($attrs, $children) {
         return function($controller) use ($attrs, $children) {
             $toleranceMode = $attrs['toleranceMode'];
-            $toleranceAttrs = preg_split('/\w+/', $attrs['tolerance']);
             $tolerance = array();
-            foreach($toleranceAttrs as $toleranceAttr) {
-                $tolerance[] = $controller->valueOrVariable($toleranceAttr);
+            if (isset($attrs['tolerance'])) {
+                $toleranceAttrs = preg_split('/\w+/', $attrs['tolerance']);
+                foreach($toleranceAttrs as $toleranceAttr) {
+                    $tolerance[] = $controller->valueOrVariable($toleranceAttr);
+                }
             }
             $includeLowerBound = true;
             if (isset($attrs['includeLowerBound'])) {
@@ -1067,10 +1087,6 @@ class FunctionGenerator {
     
     public function _statsOperator($attrs, $children) {
         throw new NotImplementedException('statsOperator');
-    }
-    
-    public function _templateConstraint($attrs, $children) {
-        throw new NotImplementedException('templateConstraint');
     }
     
     public function _templateDefault($attrs, $children) {

@@ -254,6 +254,17 @@ public function testResponseDeclaration() {
 		$this->assertEquals('before', $controller->template['SCORE']->value);
 	}
 	
+	function testProduct() {
+	    $xml = '<product>
+    <baseValue baseType="integer">2</baseValue>
+    <baseValue baseType="integer">-16</baseValue>
+   </product>';
+	    $fg = new FunctionGenerator();
+	    $func = $fg->fromXmlString($xml);
+	    $result = $func(null);
+	    $this->assertEquals(-32, $result->value);
+	}
+	
 	function testRandomInteger() {
 	    $xml = '<randomInteger max="4" min="1"/>';
 	    $fg = new FunctionGenerator();

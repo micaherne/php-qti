@@ -35,6 +35,8 @@ class ItemController {
     public $response = array();
     public $outcome = array();
     public $template = array();
+    
+    public $templateConditions = 0; // number of unsuccessful attempts to process templates
 
     public $response_source; // provides response values for variables
     public $persistence; // provides existing values of variables
@@ -143,6 +145,33 @@ class ItemController {
             }
         }
         
+        foreach($this->template as $name => $variable) {
+            if (is_null($variable->value) && !is_null($variable->defaultValue)) {
+                $this->template[$name]->value = $variable->defaultValue;
+            }
+        }
+        
+        // Process templates
+        foreach($this->templateProcessing as $func) {
+            $func($this);
+        }
+    }
+    
+    /**
+     * If a templateCondition returns true, we need to reset all template variables
+     * and restart templateProcessing. We also need to make sure that we don't get an 
+     * infinite loop.
+     */
+    public function doTemplateCondition() {
+        if($this->templateConditions++ >= 100) {
+            throw new \Exception("template condition maximum iterations exceeded");
+        }
+        
+        foreach($this->templateDeclaration as $key => $func) {
+            $func($this);
+        }
+        
+        // Initialise the template variables
         foreach($this->template as $name => $variable) {
             if (is_null($variable->value) && !is_null($variable->defaultValue)) {
                 $this->template[$name]->value = $variable->defaultValue;
