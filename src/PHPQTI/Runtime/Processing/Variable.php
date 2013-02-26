@@ -155,6 +155,55 @@ class Variable {
         }
     }
     
+    /**
+     * Returns the result of a mathematical operation
+     * 
+     * The first parameter is the name of the operation, and any further
+     * parameters are the variables to be acted on.
+     * 
+     * TODO: This is a very naive interpretation at the moment.
+     */
+    public static function mathOperator() {
+        $vars = func_get_args();
+        $name = array_shift($vars);
+        $result = new Variable('single', 'float');
+        
+        foreach($vars as $var) {
+            if ($var->isNull()) {
+                return $result;
+            }
+        }
+        
+        switch($name) {
+            case 'sin':
+                $result->value = sin($vars[1]);
+                break;
+            case 'cos':
+                $result->value = cos($vars[1]);
+                break;
+            case 'tan':
+                $result->value = tan($vars[1]);
+                break;
+            case 'sec':
+                throw new \NotImplementedException("mathOperator:sec");
+            case 'csc':
+                throw new \NotImplementedException("mathOperator:csc");
+            case 'cot':
+                throw new \NotImplementedException("mathOperator:cot");
+            case 'asin':
+                $result->value = asin($vars[1]);
+                break;
+            case 'acos':
+                $result->value = acos($vars[1]);
+                break;
+            case 'atan':
+                $result->value = atan($vars[1]);
+                break;
+        }
+        
+        return $result;
+    }
+    
     public static function max() {
         $vars = func_get_args();
         $result = new Variable('single', 'float');
