@@ -78,7 +78,7 @@ class ItemCompiler {
         foreach($this->dom->documentElement->childNodes as $child) {
         	$nodeName = $child->nodeName;
         	if ($nodeName == 'stylesheet') {
-            	if (!is_null($attr = $stylesheetNode->attributes->getNamedItem('href'))) {
+            	if (!is_null($attr = $child->attributes->getNamedItem('href'))) {
                     $result .= '$this->stylesheets[] = "' . $attr->value . "\";\n";
                 }
         	}
@@ -161,7 +161,7 @@ class ItemCompiler {
         if (count($node->attributes) > 0) {
             $attrs = array();
             foreach($node->attributes as $attr) {
-                $attrs[] = "'{$attr->name}' => '{$attr->value}'";
+                $attrs[] = "'{$attr->name}' => '{$this->escapeSingleQuotes($attr->value)}'";
             }
             $children[] = 'array(' . implode(', ', $attrs) . ')';
         }

@@ -1158,7 +1158,7 @@ class FunctionGenerator {
     }
     
     public function _stylesheet($attrs, $children) {
-        throw new NotImplementedException('stylesheet');
+        // throw new NotImplementedException('stylesheet');
     }
     
     public function _testVariables($attrs, $children) {
