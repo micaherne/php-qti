@@ -11,7 +11,6 @@ class ChoiceInteraction extends Element {
      * minChoices. Orientation is not implemented apart from being added to the 
      * CSS classes and JS data attributes for use by clients
      */
-
     public $simpleChoice = array();
     public $fixed = array(); // indices of simpleChoices with fixed set to true
     public $prompt;
@@ -25,7 +24,7 @@ class ChoiceInteraction extends Element {
         } else {
         	$orientationClass = '';
         }
-        $result = "<div id=\"choiceInteraction_{$variableName}\" class=\"qti_blockInteraction $orientationClass\"";
+        $result = "<div id=\"choiceInteraction_{$variableName}\" class=\"qti_blockInteraction {$this->cssClass()} $orientationClass\"";
         $result .= implode(' ', $this->_getDataAttributes(array('maxChoices', 'minChoices', 'orientation')));
         $result .= ">";
         // Work out what kind of HTML tag will be used for simpleChoices

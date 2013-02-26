@@ -5,11 +5,44 @@
 	
 	$.phpqti = {
 		'init': function() {
+			$('.qti_choiceInteraction').choiceInteraction();
 			$('.qti_selectPointInteraction').selectPointInteraction();
 			$('.qti_endAttemptInteraction').endAttemptInteraction();
 			$('.qti_sliderInteraction').sliderInteraction();
 		}	
 	};
+	
+	// Deal with maxChoices and minChoices
+	$.widget ( "phpqti.choiceInteraction", {
+		
+		options: {
+			
+		},
+		
+		_create: function() {
+			var self = this;
+			
+			var maxChoices = $(self.element).data('maxchoices');
+			maxChoices = maxChoices ? maxChoices : 1;
+			
+			var minChoices = $(self.element).data('minchoices');
+			minChoices = minChoices ? minChoices : 0;
+			
+			$(self.element).on('change', '.qti_simpleChoice input:checkbox', function(el) {
+				if (!maxChoices > 0) {
+					return;
+				}
+				var choices = $(self.element).find('.qti_simpleChoice input:checkbox:checked');
+				console.log(choices.length);
+				if(choices.length >= maxChoices){
+					$(self.element).find('.qti_simpleChoice input:checkbox:not(:checked)').attr('disabled', true);
+				} else {
+					$(self.element).find('.qti_simpleChoice input:checkbox').attr('disabled', false);
+				}
+			});
+		}
+		
+	});
 	
 	// TODO: Stop this allowing fractional x & y values
 	$.widget ( "phpqti.selectPointInteraction", {
