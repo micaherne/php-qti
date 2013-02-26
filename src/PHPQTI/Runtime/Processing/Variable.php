@@ -2,6 +2,8 @@
 
 namespace PHPQTI\Runtime\Processing;
 
+use PHPQTI\Runtime\Exception\NotImplementedException;
+
 class Variable {
 
     public $cardinality;
@@ -163,26 +165,26 @@ class Variable {
      * 
      * TODO: This is a very naive interpretation at the moment.
      */
-    public static function mathOperator() {
-        $vars = func_get_args();
-        $name = array_shift($vars);
+    public static function mathOperator($name, $params) {
         $result = new Variable('single', 'float');
-        
-        foreach($vars as $var) {
-            if ($var->isNull()) {
+        foreach($params as $var) {
+            if ($var->_isNull()) {
                 return $result;
             }
         }
         
         switch($name) {
             case 'sin':
-                $result->value = sin($vars[1]->getValue());
+                $result->value = sin($params[0]->getValue());
                 break;
             case 'cos':
-                $result->value = cos($vars[1]->getValue());
+                $result->value = cos($params[0]->getValue());
                 break;
             case 'tan':
-                $result->value = tan($vars[1]->getValue());
+                $result->value = tan($params[0]->getValue());
+                break;
+            case 'exp':
+                $result->value = exp($params[0]->getValue());
                 break;
             default:
                 throw new NotImplementedException('mathOperator:' . $name);

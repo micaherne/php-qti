@@ -244,6 +244,8 @@ class ItemController {
      * we just return the value as-is. See 10.2 Using Template Variables in Operator
      * Attributes Values
      * 
+     * TODO: This should check that the variable is declared as paramVariable or mathVariable
+     * 
      * @param string $value
      */
     public function valueOrVariable($value) {

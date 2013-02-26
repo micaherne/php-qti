@@ -433,6 +433,12 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         $this->assertGreaterThan(2.70, $result2);
     }
     
+    public function testMathOperator() {
+        $var1 = new Variable('single', 'integer', array('value' => 3));
+        $result1 = Variable::mathOperator('exp', array($var1));
+        $this->assertEquals(exp(3), $result1->value);
+    }
+    
    /**
      * Test max function. Full coverage.
      */

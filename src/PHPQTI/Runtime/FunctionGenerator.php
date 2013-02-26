@@ -18,6 +18,8 @@
 
 namespace PHPQTI\Runtime;
 
+use PHPQTI\Runtime\ItemController;
+
 use PHPQTI\Runtime\Exception\ExitResponseException;
 use PHPQTI\Runtime\Exception\ExitTemplateException;
 
@@ -108,6 +110,12 @@ class FunctionGenerator {
     		}
     	}
     	return $this->__call($el->nodeName, $args);
+    }
+    
+    public function fromXmlString($xml) {
+        $dom = new \DomDocument();
+        $dom->loadXML($xml);
+        return $this->fromXmlElement($dom->documentElement);
     }
 
     // Just return a function to create a basic HTML element
@@ -537,7 +545,7 @@ class FunctionGenerator {
             foreach($children as $child) {
                 $vars[] = $child->__invoke($controller);
             }
-            return Variable::max( $vars);
+            return Variable::max($vars);
         };
     }
 
@@ -547,7 +555,7 @@ class FunctionGenerator {
             foreach($children as $child) {
                 $vars[] = $child->__invoke($controller);
             }
-            return Variable::min( $vars);
+            return Variable::min($vars);
         };
     }
     
@@ -718,8 +726,13 @@ class FunctionGenerator {
         return function($controller) use ($attrs, $children) {
             $val1 = $children[0]->__invoke($controller);
             $val2 = $children[1]->__invoke($controller);
-    
-            return $val1->equalRounded($val2);
+            $figures = $controller->valueOrVariable($attrs['figures']);
+            if (isset($attrs['roundingMode'])) {
+                $roundingMode = $attrs['roundingMode'];
+            } else {
+                $roundingMode = 'significantFigures';
+            }
+            return $val1->equalRounded($val2, $figures, $roundingMode);
         };
     }
     
@@ -1002,7 +1015,16 @@ class FunctionGenerator {
     }
     
     public function _roundTo($attrs, $children) {
-        throw new NotImplementedException('roundTo');
+        return function(ItemController $controller) use ($attrs, $children) {
+            $figures = $controller->valueOrVariable($attrs['figures']);
+            if (isset($attrs['roundingMode'])) {
+                $roundingMode = $attrs['roundingMode'];
+            } else {
+                $roundingMode = 'significantFigures';
+            }
+            $val1 = $children[0]->__invoke($controller);
+            return $val1->roundTo($figures, $roundingMode);
+        };
     }
     
     public function _rubricBlock($attrs, $children) {

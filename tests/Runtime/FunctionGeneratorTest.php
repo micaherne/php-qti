@@ -109,6 +109,44 @@ public function testResponseDeclaration() {
 	    $this->assertEquals(false, $var->paramVariable);
 	    $this->assertEquals(true, $var->mathVariable);
     }
+    
+    public function testMathOperator() {
+        $xml = '<mathOperator name="exp">
+                <baseValue baseType="integer">3</baseValue>
+            </mathOperator>';
+        $fg = new FunctionGenerator();
+        $func = $fg->fromXmlString($xml);
+        $result1 = $func(null);
+        //$this->assertEquals(exp(3), $result1->value);
+    }
+    
+    public function testTemplateProcessing() {
+        $xml = '    <templateProcessing>
+        <setTemplateValue identifier="iA">
+            <randomInteger max="4" min="1"/>
+        </setTemplateValue>
+        <setTemplateValue identifier="fAns">
+            <mathOperator name="exp">
+                <variable identifier="iA"/>
+            </mathOperator>
+        </setTemplateValue>
+        <setTemplateValue identifier="fR">
+            <roundTo figures="3" roundingMode="decimalPlaces">
+                <variable identifier="fAns"/>
+            </roundTo>
+        </setTemplateValue>
+    </templateProcessing>';
+        $fg = new FunctionGenerator();
+		$func = $fg->fromXmlString($xml);
+        $controller = new ItemController();
+        $controller->template['iA'] = new Variable('single', 'integer');
+        $controller->template['fAns'] = new Variable('single', 'float');
+        $controller->template['fR'] = new Variable('single', 'float');
+        $func($controller);
+        $this->assertNotNull($controller->template['iA']->value);
+        $this->assertNotNull($controller->template['fAns']->value);
+        $this->assertNotNull($controller->template['fR']->value);
+    }
 	
 	public function testVariable() {
 	    $xml = '<variable identifier="FEEDBACK"/>';
