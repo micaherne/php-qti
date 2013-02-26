@@ -539,6 +539,16 @@ class FunctionGenerator {
         };
     }
     
+    public function _gcd($attrs, $children) {
+        return function($controller) use ($attrs, $children) {
+            $vars = array();
+            foreach($children as $child) {
+                $vars[] = $child->__invoke($controller);
+            }
+            return Variable::gcd($vars);
+        };
+    }
+    
     public function _max($attrs, $children) {
         return function($controller) use ($attrs, $children) {
             $vars = array();
@@ -719,7 +729,27 @@ class FunctionGenerator {
     }
     
     public function _equal($attrs, $children) {
-        throw new NotImplementedException("equal");
+        return function($controller) use ($attrs, $children) {
+            $toleranceMode = $attrs['toleranceMode'];
+            $toleranceAttrs = preg_split('/\w+/', $attrs['tolerance']);
+            $tolerance = array();
+            foreach($toleranceAttrs as $toleranceAttr) {
+                $tolerance[] = $controller->valueOrVariable($toleranceAttr);
+            }
+            $includeLowerBound = true;
+            if (isset($attrs['includeLowerBound'])) {
+                $includeLowerBound = ($attrs['includeLowerBound'] != 'false');
+            }
+            $includeUpperBound = true;
+            if (isset($attrs['includeUpperBound'])) {
+                $includeUpperBound = ($attrs['includeUpperBound'] != 'false');
+            }
+            
+            $val1 = $children[0]->__invoke($controller);
+            $val2 = $children[1]->__invoke($controller);
+            
+            return $val1->equal($val2, $toleranceMode, $tolerance, $includeLowerBound, $includeUpperBound);
+        };
     }
     
     public function _equalRounded($attrs, $children) {
@@ -924,10 +954,6 @@ class FunctionGenerator {
     
     public function _gapImg($attrs, $children) {
         throw new NotImplementedException('gapImg');
-    }
-    
-    public function _gcd($attrs, $children) {
-        throw new NotImplementedException('gcd');
     }
     
     public function _graphicAssociateInteraction($attrs, $children) {
