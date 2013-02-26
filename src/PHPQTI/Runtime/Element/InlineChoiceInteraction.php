@@ -2,6 +2,8 @@
 
 namespace PHPQTI\Runtime\Element;
 
+use PHPQTI\Runtime\Util\ChoiceIterator;
+
 // TODO: Implement "required" attribute
 class InlineChoiceInteraction extends Element {
 
@@ -33,7 +35,7 @@ class InlineChoiceInteraction extends Element {
             if ($child instanceof InlineChoice) {
                 $this->inlineChoice[] = $child;
                 $child->name = $variableName;
-                if($child->attrs['fixed'] === 'true') {
+                if(isset($child->attrs['fixed']) && $child->attrs['fixed'] === 'true') {
                     $this->fixed[] = count($this->inlineChoice) - 1;
                 }
             } else {
@@ -43,7 +45,7 @@ class InlineChoiceInteraction extends Element {
 
         // Work out an order to display them in
         // TODO: Worst implementation ever!
-        $order = range(0, count($this->inlineChoice) - 1);
+        /* $order = range(0, count($this->inlineChoice) - 1);
         if ($this->attrs['shuffle'] === 'true') {
             $notfixed = array_diff($order, $this->fixed);
             shuffle($notfixed);
@@ -59,6 +61,12 @@ class InlineChoiceInteraction extends Element {
             foreach($order as $i) {
                 $result .= $this->inlineChoice[$i]->__invoke($controller);
             }
+        } */
+        
+        $shuffle = $this->attrs['shuffle'] === 'true';
+        $choiceIterator = new ChoiceIterator($this->inlineChoice, $shuffle);
+        foreach($choiceIterator as $choice) {
+            $result .= $choice->__invoke($controller);
         }
 
         $result .= "</select>";

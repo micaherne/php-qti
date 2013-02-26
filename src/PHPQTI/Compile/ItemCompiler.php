@@ -36,7 +36,7 @@ class ItemCompiler {
         // Get things like title
         foreach($this->dom->documentElement->attributes as $attr) {
             if(in_array($attr->name, array('identifier', 'title', 'adaptive', 'timeDependent'))) {
-                $result .= '$this->' . $attr->name . " = '" . addslashes($attr->value) . "';\n";
+                $result .= '$this->' . $attr->name . " = '" . $this->escapeSingleQuotes($attr->value) . "';\n";
             }
         }
 
@@ -123,14 +123,14 @@ class ItemCompiler {
             if (trim($node->textContent) == '') {
                 return;
             } else {
-                return $varname . '->__text(\'' . addslashes($node->textContent) . '\')';
+                return $varname . '->__text(\'' . $this->escapeSingleQuotes($node->textContent) . '\')';
             }
         }
         if (($node->nodeType == XML_TEXT_NODE)){
             if (trim($node->nodeValue) == '') {
                 return;
             } else {
-                return $varname . '->__text(\'' . addslashes($node->nodeValue) . '\')';
+                return $varname . '->__text(\'' . $this->escapeSingleQuotes($node->nodeValue) . '\')';
             }
         }
 
@@ -176,6 +176,10 @@ class ItemCompiler {
         $result .= implode(",\n", $children);
         $result .= ')';
         return $result;
+    }
+    
+    public function escapeSingleQuotes($string) {
+        return str_replace("'", "\\'", $string);
     }
 
 }

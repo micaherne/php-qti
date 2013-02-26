@@ -36,6 +36,11 @@ class FunctionGeneratorTest extends PHPUnit_Framework_TestCase {
 		$func = $fg->__text('hello');
 		$result = $func(null);
 		$this->assertEquals('hello', $result);
+		
+		// Make sure non-empty text isn't trimmed
+		$func2 = $fg->__text(' Sorry, that\'s not correct; the correct answer is "Too many ');
+		$result2 = $func2(null);
+		$this->assertEquals(' Sorry, that', substr($result2, 0, 12));
 	}
 	
 	public function testFromXmlElement() {
