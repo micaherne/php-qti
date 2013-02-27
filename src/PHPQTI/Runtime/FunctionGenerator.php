@@ -741,8 +741,11 @@ class FunctionGenerator {
     public function _patternMatch($attrs, $children) {
         return function($controller) use ($attrs, $children) {
             $val1 = $children[0]->__invoke($controller);
-    
-            return $val1->patternMatch($attrs['pattern']);
+
+            // Do variable substitution
+            $pattern = $controller->stringOrVariable($attrs['pattern']);
+            
+            return $val1->patternMatch($pattern);
         };
     }
     

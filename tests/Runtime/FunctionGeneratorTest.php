@@ -259,6 +259,16 @@ public function testResponseDeclaration() {
 		$this->assertEquals('before', $controller->template['SCORE']->value);
 	}
 	
+	function testPatternMatch() {
+	    $xml = '<patternMatch pattern="{PATTERN}"><baseValue baseType="string">ATESTZ</baseValue></patternMatch>';
+	    $fg = new FunctionGenerator();
+	    $func = $fg->fromXmlString($xml);
+	    $controller = new ItemController();
+	    $controller->template['PATTERN'] = new Variable('single', 'string', array('value' => '^.TEST.$'));
+	    $result = $func($controller);
+	    $this->assertTrue($result->value); 
+	}
+	
 	function testProduct() {
 	    $xml = '<product>
     <baseValue baseType="integer">2</baseValue>
