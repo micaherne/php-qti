@@ -13,6 +13,7 @@
 	};
 	
 	// Deal with maxChoices and minChoices
+	// TODO: minChoices support is poor - uses JS alert
 	$.widget ( "phpqti.choiceInteraction", {
 		
 		options: {
@@ -33,7 +34,6 @@
 					return;
 				}
 				var choices = $(self.element).find('.qti_simpleChoice input:checkbox:checked');
-				console.log(choices.length);
 				if(choices.length >= maxChoices){
 					$(self.element).find('.qti_simpleChoice input:checkbox:not(:checked)').attr('disabled', true);
 				} else {
