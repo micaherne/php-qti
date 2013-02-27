@@ -17,9 +17,10 @@ class SliderInteraction extends Element {
             }
         }
 
-        $result .= "<div class=\"qti_sliderInteraction\"";
+        $result .= "<div class=\"qti_sliderInteraction\" ";
         $result .= implode(' ', $this->_getDataAttributes());
-        $result .= "> <div class=\"value\"></div> <div class=\"slider\" /></div> ";
+        $result .= "> <div class=\"value\"></div>";
+        $result .= "<div class=\"slider\" /></div> ";
         $result .= "<input type=\"hidden\" name=\"{$variableName}\" value=\"{$value}\" />";
         $result .= "</div>";
         return $result;

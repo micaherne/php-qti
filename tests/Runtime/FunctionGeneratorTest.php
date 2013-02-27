@@ -99,6 +99,11 @@ public function testResponseDeclaration() {
 	    $this->assertInternalType('array', $var->defaultValue);
 	    $this->assertEquals(array('john', 'paul', 'george', 'ringo'), $var->defaultValue);
 	    $this->assertEquals('The Beatles', $var->defaultValueInterpretation);
+	    
+	    $func2 = $fg->fromXmlString('<responseDeclaration identifier="RESPONSE_P" cardinality="single" baseType="integer"/>');
+	    $controller2 = new ItemController();
+	    $func2($controller2);
+	    $this->assertArrayHasKey('RESPONSE_P', $controller2->response);
 	}
 	
     public function testTemplateDeclaration() {

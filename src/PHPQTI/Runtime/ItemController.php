@@ -130,6 +130,7 @@ class ItemController {
         foreach($this->responseDeclaration as $key => $func) {
             $func($this);
         }
+        
         foreach($this->outcomeDeclaration as $key => $func) {
             $func($this);
         }
