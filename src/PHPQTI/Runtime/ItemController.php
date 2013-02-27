@@ -268,17 +268,35 @@ class ItemController {
     }
     
     /**
-     * Parse a *orVariableRef attribute.
-     * 
-     * If this is in the form {TEMPLATE_VAR} we return the variable, otherwise
-     * we just return the value as-is. See 10.2 Using Template Variables in Operator
-     * Attributes Values
+     * Parse an integerOrVariableRef or floatOrVariableRef attribute.
      * 
      * TODO: This should check that the variable is declared as paramVariable or mathVariable
      * 
      * @param string $value
      */
     public function valueOrVariable($value) {
+        $matches = array();
+        if (is_numeric($value)) {
+            return $value;
+        } else {
+            if (isset($this->template[$value])) {
+                return $this->template[$value]->value;
+            } else if (isset($this->outcome[$value])) {
+                return $this->outcome[$value]->value;
+            } else {
+                throw new \Exception("invalid template variable");
+            }
+        } 
+    }
+    
+    /** 
+    * Parse a stringOrVariableRef attribute.
+    * 
+    * If this is in the form {TEMPLATE_VAR} we return the variable, otherwise
+    * we just return the value as-is. See 10.2 Using Template Variables in Operator
+    * Attributes Values.
+    */
+    public function stringOrVariable($value) {
         $matches = array();
         if (preg_match('/^\{(\w*)\}$/', $value, $matches)) {
             if (isset($this->template[$matches[1]])) {
@@ -292,4 +310,5 @@ class ItemController {
             return $value;
         }
     }
+    
 }

@@ -28,12 +28,12 @@ use PHPQTI\Runtime\FunctionGenerator;
  */
 class ItemControllerTest extends PHPUnit_Framework_TestCase {
 	
-	public function testValueOrVariable() {
+	public function testStringOrVariable() {
 	    $c = new ItemController();
 	    $c->template['HELLO'] = new Variable('single', 'integer', array('value' => 56));
-	    $this->assertEquals('5', $c->valueOrVariable('5'));
-	    $this->assertEquals(5, $c->valueOrVariable(5));
-	    $this->assertEquals(56, $c->valueOrVariable('{HELLO}'));   
+	    $this->assertEquals('5', $c->stringOrVariable('5'));
+	    $this->assertEquals(5, $c->stringOrVariable(5));
+	    $this->assertEquals(56, $c->stringOrVariable('{HELLO}'));   
 	}
 	
 }

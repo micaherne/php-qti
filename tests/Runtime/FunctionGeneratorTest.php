@@ -206,7 +206,7 @@ public function testResponseDeclaration() {
 	    $this->assertEquals('2', $result1->value);
 	    
 	    // Test template variable substitution
-	    $xml = '<index n="{i}"><variable identifier="numbers"/></index>';
+	    $xml = '<index n="i"><variable identifier="numbers"/></index>';
 	    $dom->loadXML($xml);
 	    $func = $fg->fromXmlElement($dom->documentElement);
 	    $result2 = $func($controller);
@@ -287,7 +287,7 @@ public function testResponseDeclaration() {
 	        $results1[$result1->value] = 1;
 	    }
 	    
-	    $xml = '<randomInteger max="{TEST}" min="17"/>';
+	    $xml = '<randomInteger max="TEST" min="17"/>';
 	    $dom->loadXML($xml);
 	    $func = $fg->fromXmlElement($dom->documentElement);
 	     
