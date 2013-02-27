@@ -40,8 +40,18 @@
 					$(self.element).find('.qti_simpleChoice input:checkbox').attr('disabled', false);
 				}
 			});
+
+			if (minChoices > 0) {
+				$(self.element).closest('form').on('submit', function(e) {
+					var choices = $(self.element).find('.qti_simpleChoice input:checkbox:checked');
+					if(choices.length < minChoices){
+						alert('You must select at least ' + minChoices + ' choices.');
+					}
+				});
+			}
+
 		}
-		
+
 	});
 	
 	// TODO: Stop this allowing fractional x & y values
