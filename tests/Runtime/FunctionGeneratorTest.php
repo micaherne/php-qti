@@ -259,6 +259,17 @@ public function testResponseDeclaration() {
 		$this->assertEquals('before', $controller->template['SCORE']->value);
 	}
 	
+	function testParam() {
+	    $xml = '<param name="bob" value="VARIABLE" />';
+	    $fg = new FunctionGenerator();
+	    $func = $fg->fromXmlString($xml);
+	    $controller = new ItemController();
+	    $controller->template['VARIABLE'] = new Variable('single', 'string', array('value' => 'trowels'));
+	    $controller->template['VARIABLE']->paramVariable = true;
+	    $result = $func($controller);
+	    $this->assertRegExp('/value=\"trowels\"/', $result);
+	}
+	
 	function testPatternMatch() {
 	    $xml = '<patternMatch pattern="{PATTERN}"><baseValue baseType="string">ATESTZ</baseValue></patternMatch>';
 	    $fg = new FunctionGenerator();

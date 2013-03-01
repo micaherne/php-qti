@@ -1156,8 +1156,32 @@ class FunctionGenerator {
         throw new NotImplementedException('outcomeMinimum');
     }
     
+    // Just a copy of default that supports variable substitution
+    // TODO: Doesn't support proper serialisation of template values yet
+    // TODO: HTML5 doesn't support valuetype or type - what do we do with them?
     public function _param($attrs, $children) {
-        throw new NotImplementedException('param');
+        return function($controller) use ($attrs, $children) {
+            $result = "<param";
+            if(!empty($attrs)) {
+                foreach($attrs as $key => $value) {
+                    if ($key == 'value'
+                            && isset($controller->template[$value]) 
+                            && $controller->template[$value]->paramVariable) {
+                                $result .= ' value="' . $controller->template[$value]->value . '"';
+                    } else {
+                        $result .= " $key=\"$value\"";
+                    }
+                }
+            }
+            $result .= ">";
+            if(!empty($children)) {
+                foreach($children as $child) {
+                    $result .= $child->__invoke($controller);
+                }
+            }
+            $result .= "</param>";
+            return $result;
+        };
     }
     
     public function _stylesheet($attrs, $children) {
