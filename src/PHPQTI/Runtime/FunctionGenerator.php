@@ -1056,7 +1056,14 @@ class FunctionGenerator {
     }
     
     public function _repeat($attrs, $children) {
-        throw new NotImplementedException('repeat');
+        return function (ItemController $controller) use ($attrs, $children) {
+            $numberRepeats = $controller->valueOrVariable($attrs['numberRepeats']);
+            $vars = array();
+            foreach($children as $child) {
+                $vars[] = $child($controller);
+            }
+            return Variable::repeat($numberRepeats, $vars);
+        };
     }
     
     public function _responseProcessingFragment($attrs, $children) {

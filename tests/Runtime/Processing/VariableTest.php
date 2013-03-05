@@ -571,6 +571,18 @@ class VariableTest extends PHPUnit_Framework_TestCase {
     	$variable7 = new Variable('single', 'integer', array('value' => 0));
     	$this->assertEquals(0, Variable::lcm($variable7, $variable7, $variable7, $variable7)->value);
     }
+    
+    public function testRepeat() {
+        // Simple integers
+        $variable1 = new Variable('single', 'integer', array('value' => 9));
+        $variable2 = new Variable('single', 'integer', array('value' => 12));
+        $result1 = Variable::repeat(2, array($variable1, $variable2));
+        $this->assertEquals(4, count($result1->value));
+        $this->assertEquals(9, $result1->value[0]);
+        $this->assertEquals(12, $result1->value[1]);
+        $this->assertEquals(9, $result1->value[2]);
+        $this->assertEquals(12, $result1->value[3]);
+    }
 }
 
 

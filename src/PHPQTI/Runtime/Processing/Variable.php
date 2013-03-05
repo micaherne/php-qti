@@ -411,6 +411,35 @@ class Variable {
     	return $result;
     }
     
+    /**
+     * Repeat the contents of the variables a given number of times
+     */
+    public static function repeat($numberRepeats, $variables) {
+        if (count($variables) == 0) {
+            // The text of the spec appears to allow this, but what do we return??
+            throw new NotImplementedException("repeat for empty variable list");
+        }
+        $first = $variables[0];
+        $result = new Variable($first->cardinality, $first->type);
+        $repeatingSet = array();
+        foreach($variables as $var) {
+            if (!isset($var->value) || is_null($var->value)) {
+                continue;
+            }
+            if (is_array($var->value)) {
+                $repeatingSet = array_merge($var->value);
+            } else {
+                $repeatingSet[] = $var->value;
+            }
+        }
+        $result->value = array();
+        for($i = 0; $i < $numberRepeats; $i++) {
+            $result->value = array_merge($result->value, $repeatingSet);
+        }
+        
+        return $result;
+    }
+    
     public static function multiple() {
         $params = func_get_args();
 
