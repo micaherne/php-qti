@@ -5,6 +5,7 @@ namespace PHPQTI\Runtime;
 use PHPQTI\Model\AssessmentItem;
 use PHPQTI\Runtime\QTIVariable;
 use PHPQTI\Util\XMLUtils;
+use PHPQTI\Model\Enumeration\View;
 
 class AssessmentItemController {
 
@@ -23,6 +24,9 @@ class AssessmentItemController {
     public $identifier;
     
     protected $assessmentItem;
+    
+    // TODO: Currently no way to change this
+    public $view = View::author;
     
     // Generated functions (unused)
     public $responseDeclaration = array();

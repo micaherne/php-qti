@@ -2,6 +2,8 @@
  
 namespace PHPQTI\Model;
 
+use PHPQTI\Runtime\Exception\NotImplementedException;
+
 use PHPQTI\Model\Base\StringInteraction;
 use PHPQTI\Model\Base\Interaction;
 use PHPQTI\Model\Base\Flow;
@@ -32,6 +34,7 @@ class ExtendedTextInteraction extends \PHPQTI\Model\Gen\ExtendedTextInteraction
             $values = array($variable->value);
             $count = 1;
         } else {
+            throw new NotImplementedException("textEntryInteraction doesn't work properly for multiple variables");
             $brackets = '[]';
             $values = $variable->value;
             $count = $this->maxStrings;
