@@ -11,6 +11,7 @@ class XMLUtilsTest extends PHPUnit_Framework_TestCase {
     
     function testUnmarshall() {
         $dom = new \DOMDocument();
+        $xmlutils = new XMLUtils();
         
         // Test actual object
         $this->assertTrue($dom->loadXML('<b xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" id="test" class="nim" label="bim">Hello there!</b>'));
