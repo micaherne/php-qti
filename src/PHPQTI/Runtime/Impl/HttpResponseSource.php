@@ -2,7 +2,7 @@
 
 namespace PHPQTI\Runtime\Impl;
 
-use PHPQTI\Runtime\Processing\Variable;
+use PHPQTI\Runtime\QTIVariable;
 use PHPQTI\Runtime\ResponseSource;
 
 // TODO: Support file upload
@@ -14,7 +14,7 @@ class HttpResponseSource implements ResponseSource {
      * @param qti_variable $variable
      */
 
-    public function bindVariable($name, Variable &$variable) {
+    public function bindVariable($name, QTIVariable &$variable) {
         switch ($variable->cardinality) {
             case 'single':
                 if( $submittedvalue = $this->get($name)) {
