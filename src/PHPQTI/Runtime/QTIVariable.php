@@ -59,6 +59,7 @@ class QTIVariable {
         if (isset($params['areaMapping'])) {
             $this->areaMapping = $params['areaMapping'];
         }
+        
     }
 
     public static function fromDeclaration($declaration) {
@@ -98,9 +99,9 @@ class QTIVariable {
                     }
             
                 } else if ($child instanceof Mapping) {
-                    $result->mapping = $child($controller);
+                    $result->mapping = $child(null);
                 } else if ($child instanceof AreaMapping) {
-                    $result->areaMapping = $child($controller);
+                    $result->areaMapping = $child(null);
                 }
             }
         }

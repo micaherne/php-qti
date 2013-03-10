@@ -132,15 +132,15 @@ class AssessmentItemController {
         $this->response['numAttempts']->value++;
         
         // Initialise all the declared variables
-        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\ResponseDeclaration') as $func) {
-            $func($this);
+        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\ResponseDeclaration') as $responseDeclaration) {
+            $responseDeclaration($this);
         }
         
-        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\OutcomeDeclaration') as $func) {
-            $func($this);
+        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\OutcomeDeclaration') as $outcomeDeclaration) {
+            $outcomeDeclaration($this);
         }
-        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\TemplateDeclaration') as $key => $func) {
-            $func($this);
+        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\TemplateDeclaration') as $key => $templateDeclaration) {
+            $templateDeclaration($this);
         }
         
         // Initialise the outcome and template variables
@@ -158,8 +158,8 @@ class AssessmentItemController {
         }
         
         // Process templates
-        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\TemplateProcessing') as $func) {
-            $func($this);
+        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\TemplateProcessing') as $templateProcessing) {
+            $templateProcessing($this);
         }
     }
     
@@ -173,8 +173,8 @@ class AssessmentItemController {
             throw new \Exception("template condition maximum iterations exceeded");
         }
         
-        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\TemplateDeclaration') as $key => $func) {
-            $func($this);
+        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\TemplateDeclaration') as $key => $templateDeclaration) {
+            $templateDeclaration($this);
         }
         
         // Initialise the template variables
@@ -185,8 +185,8 @@ class AssessmentItemController {
         }
         
         // Process templates
-        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\TemplateProcessing') as $func) {
-            $func($this);
+        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\TemplateProcessing') as $templateProcessing) {
+            $templateProcessing($this);
         }
     }
 
@@ -221,26 +221,26 @@ class AssessmentItemController {
      * based on the responses.
      */
     public function processResponse() {
-        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\ResponseProcessing') as $func) {
+        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\ResponseProcessing') as $responseProcessing) {
             // Allow templates in response processing
-            if (!is_null($func->template)) {
-                $template = str_replace("http://www.imsglobal.org/question/qti_v2p1/rptemplates/", '', $func->template);
+            if (!is_null($responseProcessing->template)) {
+                $template = str_replace("http://www.imsglobal.org/question/qti_v2p1/rptemplates/", '', $responseProcessing->template);
     	        $dom = new \DOMDocument();
     	        $template_location = 'http://www.imsglobal.org/question/qti_v2p1/rptemplates/'.$template. '.xml';
     	        $dom->load($template_location);
     	        $xmlutils = new XMLUtils();
-    	        $responseProcessing = $xmlutils->unmarshall($dom);
-    	        $responseProcessing($this);
+    	        $responseProcessingTemplate = $xmlutils->unmarshall($dom);
+    	        $responseProcessingTemplate($this);
             } else {
-                $func($this);
+                $responseProcessing($this);
             }
         }
 
         // Reset the modal feedback
         $this->modalFeedbackItems = array();
         
-        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\ModalFeedback') as $func) {
-            $feedbackItem = $func($this);
+        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\ModalFeedback') as $modalFeedback) {
+            $feedbackItem = $modalFeedback($this);
             if (!empty($feedbackItem)) {
                 $this->modalFeedbackItems[] = $feedbackItem;
             }
