@@ -14,6 +14,6 @@ class Object extends \PHPQTI\Model\Gen\Object implements BodyElement, FlowStatic
         if(isset($this->data)) {
             $this->data = $controller->resource_provider->urlFor($this->data);
         }
-        return FunctionGenerator::__basicElement('object', $attrs, $args, $controller);
+        return parent::__invoke($controller);
     }
 }
