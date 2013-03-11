@@ -62,9 +62,11 @@ class HttpResponseSource implements ResponseSource {
                  * TODO: Deal with unset options
                  */
                 $values = $this->get($name);
-                $values = array_flip($values);
-                ksort($values);
-                $variable->value = array_values($values);
+                if (!is_null($values)) {
+	                $values = array_flip($values);
+	                ksort($values);
+	                $variable->value = array_values($values);
+                }
                 break;
             default:
                 throw new Exception('qti_http_response_source does not support variable cardinality ' . $variable->cardinality);

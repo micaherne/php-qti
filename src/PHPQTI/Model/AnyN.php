@@ -3,6 +3,7 @@
 namespace PHPQTI\Model;
  
 use PHPQTI\Model\Base\Expression;
+use PHPQTI\Runtime\QTIVariable;
 
 class AnyN extends \PHPQTI\Model\Gen\AnyN implements Expression {
 
