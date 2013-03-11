@@ -53,6 +53,7 @@ class AssessmentItemController {
     public $response_source; // provides response values for variables
     public $persistence; // provides existing values of variables
     public $resource_provider; // provides URLs for images etc.
+    public $templateResolver; // provides responseProcessing templates
 
     public $show_debugging = false; // do we show memory usage etc.?
 
@@ -224,6 +225,10 @@ class AssessmentItemController {
     public function setResourceProvider(ResourceProvider $resource_provider) {
         $this->resource_provider = $resource_provider;
     }
+    
+    public function setTemplateResolver(TemplateResolver $templateResolver) {
+    	$this->templateResolver = $templateResolver;
+    }
 
     /**
      * Run the responseProcessing function which will update the outcome variables
@@ -233,12 +238,7 @@ class AssessmentItemController {
         foreach($this->assessmentItem->getChildren('\PHPQTI\Model\ResponseProcessing') as $responseProcessing) {
             // Allow templates in response processing
             if (!is_null($responseProcessing->template)) {
-                $template = str_replace("http://www.imsglobal.org/question/qti_v2p1/rptemplates/", '', $responseProcessing->template);
-    	        $dom = new \DOMDocument();
-    	        $template_location = 'http://www.imsglobal.org/question/qti_v2p1/rptemplates/'.$template. '.xml';
-    	        $dom->load($template_location);
-    	        $xmlutils = new XMLUtils();
-    	        $responseProcessingTemplate = $xmlutils->unmarshall($dom);
+                $responseProcessingTemplate = $this->templateResolver->getTemplate($responseProcessing->template);
     	        try {
     	            $responseProcessingTemplate($this);
 	            } catch (ExitResponseException $e) {
