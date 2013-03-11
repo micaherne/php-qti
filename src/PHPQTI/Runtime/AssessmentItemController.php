@@ -62,8 +62,9 @@ class AssessmentItemController {
      */
     public $context = array(); // for passing contextual info (e.g. ancestor nodes)
 
-    public function __construct(AssessmentItem $assessmentItem = null) {
+    public function __construct(AssessmentItem $assessmentItem = null, $identifier = null) {
         $this->assessmentItem = $assessmentItem;
+        $this->identifier = $identifier;
     }
 
     public function setUpDefaultVars() {
