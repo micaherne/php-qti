@@ -53,10 +53,11 @@ class ChoiceInteraction extends \PHPQTI\Model\Gen\ChoiceInteraction
         
         $this->simpleChoice = array();
         $this->fixed = array();
+        $prompt = null;
         // Process child nodes
         foreach($this->_children as $child) {
             if ($child instanceof Prompt) {
-                $this->prompt = $child;
+                $prompt = $child;
             } else if ($child instanceof SimpleChoice) {
                 $child->inputType = $simpleChoiceType;
                 $child->name = $variableName.$brackets;
@@ -67,8 +68,8 @@ class ChoiceInteraction extends \PHPQTI\Model\Gen\ChoiceInteraction
             }
         }
         
-        if (!is_null($this->prompt)) {
-            $result .= $this->prompt->__invoke($controller);
+        if (!is_null($prompt)) {
+            $result .= $prompt->__invoke($controller);
         }
         
         $shuffle = $this->shuffle === 'true';
