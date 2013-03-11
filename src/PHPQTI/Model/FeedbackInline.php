@@ -16,7 +16,7 @@ class FeedbackInline extends \PHPQTI\Model\Gen\FeedbackInline implements Feedbac
     public function __invoke($controller) {
         if ($controller->showFeedback($this)) {
             $result = "<span class=\"{$this->cssClass()}\">";
-            foreach ($this->children as $child) {
+            foreach ($this->_children as $child) {
                 $result .= $child->__invoke($controller);
             }
             $result .= '</span>';

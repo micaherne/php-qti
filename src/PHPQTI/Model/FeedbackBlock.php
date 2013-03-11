@@ -14,7 +14,7 @@ class FeedbackBlock extends \PHPQTI\Model\Gen\FeedbackBlock implements FeedbackE
     public function __invoke($controller) {
         if ($controller->showFeedback($this)) {
             $result = "<span class=\"{$this->cssClass()}\">";
-            foreach ($this->children as $child) {
+            foreach ($this->_children as $child) {
                 $result .= $child->__invoke($controller);
             }
             $result .= '</span>';
