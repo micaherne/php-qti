@@ -2,6 +2,8 @@
 
 namespace PHPQTI\Util;
 
+use PHPQTI\Model\MathML\MathMLController;
+
 use PHPQTI\Model\Base\Text;
 
 use PHPQTI\Util\XMLUtils;
@@ -47,22 +49,13 @@ class ObjectFactory {
             $result = new $realclassname($attrs, $args);
             return $result;
         }
+        
+        if ($name === '__mathml') {
+            return new MathMLController($args[0]);
+        }
                 
         die('Unknown class ' . $name);
-        $realmethodname = "_$name";
-        if (method_exists($this, $realmethodname)) {
-            return $this->$realmethodname($attrs, $args);
-        }
-    
-        // Support MathML functions. (___mathml_math function
-        // exists below to create container with correct NS)
-        // TODO: It would be good if this was pluggable to support other namespaces if required.
-        if (strpos($name, '__mathml_') === 0) {
-            $name = substr($name, 9);
-        }
-    
-        // default to just creating a basic HTML element
-        return $this->__default($name, $attrs, $args);
+
     }
     
 }

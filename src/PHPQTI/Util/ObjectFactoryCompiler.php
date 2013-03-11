@@ -72,7 +72,18 @@ class ObjectFactoryCompiler {
                     $methodName = $name;
                     break;
                 case 'http://www.w3.org/1998/Math/MathML':
-                    $methodName = '__mathml_' . $name;
+                    // as soon as we hit the MathML namespace, just create a MathML object
+                    $methodName = '__mathml';
+                    $result = $varname . '->' . $methodName . '(\'';
+                    $xml = '<m:math xmlns="http://www.w3.org/1998/Math/MathML">';
+                    foreach($node->childNodes as $node) {
+                        $xml .= $node->ownerDocument->saveXML($node);
+                    }
+                    $xml .= "</m:math>";
+                    $result .= str_replace("'", "\\'", $xml);
+                    $result .= '\')';
+                    return $result;
+                    // $methodName = '__mathml_' . $name;
                     break;
                 default:
                     throw new Exception('Unsupported XML namespace: ' . $nodeNamespace);
