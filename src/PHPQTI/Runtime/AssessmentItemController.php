@@ -238,9 +238,19 @@ class AssessmentItemController {
     	        $dom->load($template_location);
     	        $xmlutils = new XMLUtils();
     	        $responseProcessingTemplate = $xmlutils->unmarshall($dom);
-    	        $responseProcessingTemplate($this);
+    	        try {
+    	            $responseProcessingTemplate($this);
+	            } catch (ExitResponseException $e) {
+	                // stop processing immediately
+	                return;
+	            }    
             } else {
-                $responseProcessing($this);
+                try {
+                    $responseProcessing($this);
+                } catch (ExitResponseException $e) {
+                    // stop processing immediately
+                    return;
+                }
             }
         }
 

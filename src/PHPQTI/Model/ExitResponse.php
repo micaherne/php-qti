@@ -10,5 +10,5 @@ class ExitResponse extends \PHPQTI\Model\Gen\ExitResponse implements ResponseRul
 
     public function __invoke($controller) {
     	throw new ExitResponseException();
-    	}
+    }
 }
