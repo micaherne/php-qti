@@ -29,9 +29,7 @@ class GapMatchInteraction extends \PHPQTI\Model\Gen\GapMatchInteraction
         $this->displayNodes = array(); // Nodes which will be processed for display as normal
         // Process child nodes
         foreach($this->_children as $child) {
-            if ($child instanceof Prompt) {
-                $this->prompt = $child;
-            } else if ($child instanceof GapText) {
+            if ($child instanceof GapText) {
                 $this->gapChoice[] = $child;
                 if(isset($child->fixed) && $child->fixed === 'true') {
                     $this->fixed[] = count($this->gapChoice) - 1;
@@ -39,10 +37,6 @@ class GapMatchInteraction extends \PHPQTI\Model\Gen\GapMatchInteraction
             } else {
                 $this->displayNodes[] = $child;
             }
-        }
-    
-        if (!is_null($this->prompt)) {
-            $result .= $this->prompt->__invoke($controller);
         }
     
         foreach($this->displayNodes as $node) {
