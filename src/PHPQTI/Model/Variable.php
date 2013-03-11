@@ -3,6 +3,7 @@
 namespace PHPQTI\Model;
  
 use PHPQTI\Model\Base\Expression;
+use PHPQTI\Runtime\Exception\ProcessingException;
 
 class Variable extends \PHPQTI\Model\Gen\Variable implements Expression {
 

@@ -2,6 +2,10 @@
 
 namespace PHPQTI\Runtime;
 
+use PHPQTI\Runtime\Exception\ProcessingException;
+
+use PHPQTI\Model\Base\FeedbackElement;
+
 use PHPQTI\Model\AssessmentItem;
 use PHPQTI\Runtime\QTIVariable;
 use PHPQTI\Util\XMLUtils;
@@ -336,4 +340,48 @@ class AssessmentItemController {
         return $this->assessmentItem->title;
     }
     
+    /**
+     * Should the given feedback element be shown in the current context?
+     * 
+     * TODO: It would be good to have a FeedbackElement type hint on the parameter
+     * but ModalFeedback doesn't implement it (according to the spec).
+     * 
+     * @param FeedbackElement $element
+     * @return boolean
+     * @throws ProcessingException
+     */
+    public function showFeedback($element) {
+        if (!isset($element->outcomeIdentifier) || !isset($this->outcome[$element->outcomeIdentifier])) {
+            throw new ProcessingException("Showing feedback requires a valid outcomeIdentifier");
+        }
+        
+        $variable = $this->outcome[$element->outcomeIdentifier];
+ 
+        $result = false;
+        
+        if (is_null($variable->value)) {
+            return $result;
+        }
+        
+        
+        if ($variable->cardinality == 'single') {
+            if ($element->showHide == 'show') {
+                $result = $variable->value == $element->identifier;
+            } else if ($element->showHide == 'hide') {
+                $result = $variable->value != $element->identifier;
+            } else {
+                throw new ProcessingException("Invalid showHide value");
+            }
+        } else {
+            if ($element->showHide == 'show') {
+                $result = in_array($element->identifier, $variable->value);
+            } else if ($element->showHide == 'hide') {
+                $result = !in_array($element->identifier, $variable->value);
+            } else {
+                throw new ProcessingException("Invalid showHide value");
+            }
+        }
+        
+        return $result;
+    }
 }
