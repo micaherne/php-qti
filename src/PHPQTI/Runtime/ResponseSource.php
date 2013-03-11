@@ -9,5 +9,6 @@ interface ResponseSource {
     public function bindVariable($name, QTIVariable &$variable);
     public function get($name);
     public function isEndAttempt();
+    public function isReset();
 
 }

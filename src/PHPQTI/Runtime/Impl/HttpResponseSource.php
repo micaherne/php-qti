@@ -85,5 +85,10 @@ class HttpResponseSource implements ResponseSource {
     public function isEndAttempt() {
         return count($_POST) > 0; // TODO: Finish - how do we really check if they've ended the attempt
     }
+    
+    public function isReset() {
+    	return (isset($_POST['PHPQTI-RESET']) 
+    			&& $_POST['PHPQTI-RESET'] == 'true');
+    }
 
 }

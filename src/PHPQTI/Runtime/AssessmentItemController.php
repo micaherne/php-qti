@@ -91,6 +91,11 @@ class AssessmentItemController {
         }
         echo "<input type=\"submit\" value=\"Submit response\"/>";
         echo "</form>";
+        
+        // Show a reset button
+        echo "<form method=\"post\">
+        		<input type=\"hidden\" name=\"PHPQTI-RESET\" value=\"true\">
+        		<input type=\"submit\" value=\"Reset item\" /></form>";
     }
 
     // This just deals with the change of state and processing
@@ -99,8 +104,12 @@ class AssessmentItemController {
     // TODO: This is still just a demo workflow - it needs a bit of work!
     // We should really have buttons to explicitly end the session, suspend etc.
     public function run() {
-        $this->persistence->restore($this);
-        
+    	if ($this->response_source->isReset()) {
+    		$this->persistence->reset($this);
+    	} else {
+    		$this->persistence->restore($this);
+    	}
+    	
         switch($this->state) {
             case AssessmentItemController::STATE_NONE:
                 $this->beginItemSession();
