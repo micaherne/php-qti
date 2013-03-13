@@ -38,19 +38,22 @@ class ObjectFactoryCompiler {
         return $result;
     }
     
-    public function generating_function($node, $varname = '$p') {
-        if (($node->nodeType == XML_COMMENT_NODE)) {
+    public function generating_function($node, $varname = '$p', $ignoreWhitespace = true) {
+        if ($node->nodeType == XML_COMMENT_NODE) {
             return;
         }
-        if (($node->nodeType == XML_CDATA_SECTION_NODE)) {
-            if (trim($node->textContent) == '') {
+        if ($node->nodeName == 'itemBody') {
+        	$ignoreWhitespace = false;
+        }
+        if ($node->nodeType == XML_CDATA_SECTION_NODE) {
+            if ($ignoreWhitespace && trim($node->textContent) == '') {
                 return;
             } else {
                 return $varname . '->__text(\'' . $this->escapeSingleQuotes($node->textContent) . '\')';
             }
         }
-        if (($node->nodeType == XML_TEXT_NODE)){
-            if (trim($node->nodeValue) == '') {
+        if ($node->nodeType == XML_TEXT_NODE){
+            if ($ignoreWhitespace && trim($node->nodeValue) == '') {
                 return;
             } else {
                 return $varname . '->__text(\'' . $this->escapeSingleQuotes($node->nodeValue) . '\')';
@@ -101,7 +104,7 @@ class ObjectFactoryCompiler {
         }
         if (!empty($node->childNodes)) {
             foreach($node->childNodes as $node) {
-                $childFunction = $this->generating_function($node, $varname);
+                $childFunction = $this->generating_function($node, $varname, $ignoreWhitespace);
                 if (!is_null($childFunction)) {
                     $children[] = $childFunction;
                 }

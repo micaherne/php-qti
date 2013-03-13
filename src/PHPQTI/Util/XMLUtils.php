@@ -33,12 +33,15 @@ class XMLUtils {
         return $this->unmarshallNode($dom->documentElement, $assumeQTI21namespace);
     }
     
-    private function unmarshallNode(\DOMNode $node, $assumeQTI21namespace = false) {
+    private function unmarshallNode(\DOMNode $node, $assumeQTI21namespace = false, $ignoreWhitespace = true) {
         // echo "Calling unmarshallNode: " . $node->nodeName . "\n";
         $result = null;
+        if ($node->nodeName == 'itemBody') {
+        	$ignoreWhitespace = false;
+        }
         switch ($node->nodeType) {
             case XML_TEXT_NODE:
-                if (trim($node->nodeValue) == '') {
+                if ($ignoreWhitespace && trim($node->nodeValue) == '') {
                     return;
                 } else {
                     return new \PHPQTI\Model\Base\Text($node->nodeValue);
@@ -72,7 +75,7 @@ class XMLUtils {
                         }
                         
                         foreach($node->childNodes as $child) {
-                            $c = $this->unmarshallNode($child, $assumeQTI21namespace);
+                            $c = $this->unmarshallNode($child, $assumeQTI21namespace, $ignoreWhitespace);
                             if (!is_null($c)) {
                                 //echo "Adding child " . $child->nodeName . "\n";
                                 $result->addChild($c);
