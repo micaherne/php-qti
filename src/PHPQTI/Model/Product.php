@@ -3,6 +3,7 @@
 namespace PHPQTI\Model;
  
 use PHPQTI\Model\Base\Expression;
+use PHPQTI\Runtime\QTIVariable;
 
 class Product extends \PHPQTI\Model\Gen\Product implements Expression {
 
