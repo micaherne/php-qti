@@ -53,7 +53,6 @@ class XMLUtils {
                     if (class_exists($classname)) {
                         $result = new $classname();
                         foreach($node->attributes as $name => $attributeNode) {
-                            //echo "$name\n";
                             $prefix = null; // must be null for lookupNamespaceURI - see docs
                             $namespace = null;
                             $nodeName = '';
@@ -67,25 +66,24 @@ class XMLUtils {
                             if (property_exists($classname, $nodeName)) {
                                     $result->$nodeName = $attributeNode->nodeValue;
                                 } else {
-                                    //echo "WTF kind of property is $nodeName\n";
+                                    //echo "Unknown property $nodeName\n";
                                 }
                             } else {
-                                // echo "WTF kind of attribute is this: " . $attributeNode->nodeName;
+                                // echo "Unknown attribute type: " . $attributeNode->nodeName;
                             }
                         }
                         
                         foreach($node->childNodes as $child) {
                             $c = $this->unmarshallNode($child, $assumeQTI21namespace, $ignoreWhitespace);
                             if (!is_null($c)) {
-                                //echo "Adding child " . $child->nodeName . "\n";
                                 $result->addChild($c);
                             } else {
-                                //echo "WTF kind of child is " . $child->nodeName . "?\n";
+                                //echo "Unknown child type " . $child->nodeName . "?\n";
                             }
                         }
                     }
                 } else {
-                    //echo "WTF kind of namespace is that?\n";
+                    //echo "Unknown namespace\n";
                 }
                 break;
             default:
