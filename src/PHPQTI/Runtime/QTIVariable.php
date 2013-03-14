@@ -211,10 +211,10 @@ class QTIVariable {
     public static function mathConstant($name) {
         switch ($name) {
             case 'pi':
-                return pi();
+                return new QTIVariable('single', 'float', array('value' => pi()));
                 break;
             case 'e':
-                return exp(1);
+                return new QTIVariable('single', 'float', array('value' => exp(1)));
                 break;
             default:
                 // TODO: Not defined in spec
@@ -866,7 +866,7 @@ class QTIVariable {
             return $result;
         }
         if ($toleranceMode == 'exact') {
-            $result->value = $this->value == $other->value;
+            $result->value = ($this->value == $other->value);
             return $result;
         } else {
             if (is_null($tolerance)) {
@@ -1045,7 +1045,7 @@ class QTIVariable {
         return $result;
     }
 
-    public function gt() {
+    public function gt($othervariable) {
         $result = new QTIVariable('single', 'boolean', array('value' => false));
 
         if ($this->_isNull() || $othervariable->_isNull()) {
@@ -1057,7 +1057,7 @@ class QTIVariable {
         return $result;
     }
 
-    public function lte() {
+    public function lte($othervariable) {
         $result = new QTIVariable('single', 'boolean', array('value' => false));
 
         if ($this->_isNull() || $othervariable->_isNull()) {
@@ -1069,7 +1069,7 @@ class QTIVariable {
         return $result;
     }
 
-    public function gte() {
+    public function gte($othervariable) {
         $result = new QTIVariable('single', 'boolean', array('value' => false));
 
         if ($this->_isNull() || $othervariable->_isNull()) {

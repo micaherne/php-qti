@@ -13,11 +13,11 @@ class FeedbackBlock extends \PHPQTI\Model\Gen\FeedbackBlock implements FeedbackE
 
     public function __invoke($controller) {
         if ($controller->showFeedback($this)) {
-            $result = "<span class=\"{$this->cssClass()}\">";
+            $result = "<div class=\"{$this->cssClass()}\">";
             foreach ($this->_children as $child) {
                 $result .= $child->__invoke($controller);
             }
-            $result .= '</span>';
+            $result .= '</div>';
             return $result;
         } else {
             return '';

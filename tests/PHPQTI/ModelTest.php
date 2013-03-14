@@ -23,6 +23,13 @@ class ModelTest extends PHPUnit_Framework_TestCase {
         $result = $baseValue(null);
         $this->assertEquals('float', $result->type);
         $this->assertEquals(1, $result->value);
+        
+        // Test boolean converted correctly
+        $baseValue = $this->fromXmlFragment('<baseValue baseType="boolean">false</baseValue>');
+        $result2 = $baseValue(null);
+        $this->assertEquals('boolean', $result2->type);
+        $this->assertFalse($result2->value);
+        
     }
     
     public function testCorrect() {
@@ -49,6 +56,34 @@ class ModelTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(array('john', 'paul', 'george', 'ringo'), $result);
         $this->assertEquals('The Beatles', $defaultValue->interpretation);
         
+    }
+    
+    public function testDivide() {
+        $divide = $this->fromXmlFragment('<divide>
+                <mathConstant name="pi"/>
+                <baseValue baseType="integer">180</baseValue>
+            </divide>');
+        
+        $result = $divide(null);
+        $this->assertEquals(pi()/180, $result->value);
+    }
+    
+    public function testEqual() {
+        $equal = $this->fromXmlFragment('<equal toleranceMode="exact">
+                    <variable identifier="iA"/>
+                    <variable identifier="iB"/>
+                </equal>');
+
+        $item = new AssessmentItem();
+        $controller = new AssessmentItemController($item);
+        $controller->template['iA'] = new QTIVariable('single', 'integer', array('value' => 50));
+        $controller->template['iB'] = $controller->template['iA'];
+        $result = $equal($controller);
+        $this->assertTrue($result->value);
+        
+        $controller->template['iB'] = new  QTIVariable('single', 'integer', array('value' => 51));
+        $result = $equal($controller);
+        $this->assertFalse($result->value); 
     }
     
     public function testMatch() {
@@ -81,6 +116,29 @@ class ModelTest extends PHPUnit_Framework_TestCase {
         
         $result1 = $mapping($controller);
         $this->assertCount(3, $result1->getChildren('PHPQTI\Model\MapEntry'));
+    }
+    
+    public function testNot() {
+        $not = $this->fromXmlFragment('<not><baseValue baseType="boolean">true</baseValue></not>');
+        $result1 = $not(null);
+        $this->assertFalse($result1->value);
+        
+        $not = $this->fromXmlFragment('<not><baseValue baseType="boolean">false</baseValue></not>');
+        $result2 = $not(null);
+        $this->assertTrue($result2->value);
+    }
+    
+    public function testRandomInteger() {
+        $randomInteger = $this->fromXmlFragment('<randomInteger min="50" max="85" step="5"/>');
+        $item = new AssessmentItem();
+        $controller = new AssessmentItemController($item);
+        // do it several times
+        for ($i = 0; $i < 20; $i++) {
+            $result1 = $randomInteger($controller);
+            $this->assertGreaterThanOrEqual(50, $result1->value);
+            $this->assertLessThanOrEqual(85, $result1->value);
+            $this->assertEquals(0, $result1->value % 5);
+        }
     }
     
     public function testResponseDeclaration() {

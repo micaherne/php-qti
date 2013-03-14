@@ -6,6 +6,7 @@ use PHPQTI\Model\Base\Interaction;
 use PHPQTI\Model\Base\Inline;
 use PHPQTI\Model\Base\Flow;
 use PHPQTI\Model\Base\InlineInteraction;
+use PHPQTI\Model\Base\Text;
 use PHPQTI\Util\ChoiceIterator;
 
 class InlineChoiceInteraction extends \PHPQTI\Model\Gen\InlineChoiceInteraction
@@ -26,7 +27,7 @@ implements InlineInteraction, Flow, Inline, Interaction {
 
         // Find variable
         if (!isset($controller->response[$variableName])) {
-            throw new Exception("Declaration for $variableName not found");
+            throw new \Exception("Declaration for $variableName not found");
         }
 
         $responseVariable = $controller->response[$variableName];
@@ -41,8 +42,10 @@ implements InlineInteraction, Flow, Inline, Interaction {
                 if(isset($child->fixed) && $child->fixed === 'true') {
                     $this->fixed[] = count($this->inlineChoice) - 1;
                 }
+            } else if ($child instanceof Text) {
+                // no-op - just ignore text nodes
             } else {
-                throw new Exception("Unknown child element in inlineChoice");
+                throw new \Exception("Unknown child element in inlineChoice");
             }
         }
 

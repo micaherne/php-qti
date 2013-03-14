@@ -3,6 +3,7 @@
 namespace PHPQTI\Runtime;
 
 use PHPQTI\Runtime\Exception\ProcessingException;
+use PHPQTI\Runtime\Exception\TemplateConstraintException;
 
 use PHPQTI\Model\Base\FeedbackElement;
 
@@ -158,6 +159,7 @@ class AssessmentItemController {
         foreach($this->assessmentItem->getChildren('\PHPQTI\Model\OutcomeDeclaration') as $outcomeDeclaration) {
             $outcomeDeclaration($this);
         }
+
         foreach($this->assessmentItem->getChildren('\PHPQTI\Model\TemplateDeclaration') as $key => $templateDeclaration) {
             $templateDeclaration($this);
         }
@@ -170,16 +172,35 @@ class AssessmentItemController {
             }
         }
         
+        $this->initialiseTemplates();
+        
+    }
+    
+    /**
+     * Initialise the template variables from the declarations and do processing.
+     * 
+     * This is in its own method as it may be used by {@link AssessmentItemController::doTemplateCondition()};
+     */
+    public function initialiseTemplates($reset = false) {
+        
         foreach($this->template as $name => $variable) {
+            if ($reset) {
+                $this->template[$name]->value = null;
+            }
             if (is_null($variable->value) && !is_null($variable->defaultValue)) {
                 $this->template[$name]->value = $variable->defaultValue;
             }
         }
         
         // Process templates
-        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\TemplateProcessing') as $templateProcessing) {
-            $templateProcessing($this);
+        try {
+            foreach($this->assessmentItem->getChildren('\PHPQTI\Model\TemplateProcessing') as $templateProcessing) {
+                $templateProcessing($this);
+            }
+        } catch (TemplateConstraintException $e) {
+            $this->doTemplateConstraint();
         }
+        
     }
     
     /**
@@ -187,26 +208,13 @@ class AssessmentItemController {
      * and restart templateProcessing. We also need to make sure that we don't get an 
      * infinite loop.
      */
-    public function doTemplateCondition() {
+    public function doTemplateConstraint() {
         if($this->templateConditions++ >= 100) {
             throw new \Exception("template condition maximum iterations exceeded");
         }
         
-        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\TemplateDeclaration') as $key => $templateDeclaration) {
-            $templateDeclaration($this);
-        }
+        $this->initialiseTemplates(true);
         
-        // Initialise the template variables
-        foreach($this->template as $name => $variable) {
-            if (is_null($variable->value) && !is_null($variable->defaultValue)) {
-                $this->template[$name]->value = $variable->defaultValue;
-            }
-        }
-        
-        // Process templates
-        foreach($this->assessmentItem->getChildren('\PHPQTI\Model\TemplateProcessing') as $templateProcessing) {
-            $templateProcessing($this);
-        }
     }
 
     public function endAttempt() {
@@ -402,6 +410,41 @@ class AssessmentItemController {
             }
         }
         
+        return $result;
+    }
+    
+    public function showTemplate($element) {
+        if (!isset($element->templateIdentifier) || !isset($this->template[$element->templateIdentifier])) {
+            throw new ProcessingException("Showing template requires a valid templateIdentifier");
+        }
+    
+        $variable = $this->template[$element->templateIdentifier];
+    
+        $result = false;
+    
+        if (is_null($variable->value)) {
+            return $result;
+        }
+    
+    
+        if ($variable->cardinality == 'single') {
+            if ($element->showHide == 'show') {
+                $result = $variable->value == $element->identifier;
+            } else if ($element->showHide == 'hide') {
+                $result = $variable->value != $element->identifier;
+            } else {
+                throw new ProcessingException("Invalid showHide value");
+            }
+        } else {
+            if ($element->showHide == 'show') {
+                $result = in_array($element->identifier, $variable->value);
+            } else if ($element->showHide == 'hide') {
+                $result = !in_array($element->identifier, $variable->value);
+            } else {
+                throw new ProcessingException("Invalid showHide value");
+            }
+        }
+    
         return $result;
     }
 }

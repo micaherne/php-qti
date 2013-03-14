@@ -3,6 +3,7 @@
 namespace PHPQTI\Model;
  
 use PHPQTI\Model\Base\TemplateRule;
+use PHPQTI\Runtime\Exception\TemplateConstraintException;
 
 class TemplateConstraint extends \PHPQTI\Model\Gen\TemplateConstraint implements TemplateRule {
 
@@ -11,8 +12,8 @@ class TemplateConstraint extends \PHPQTI\Model\Gen\TemplateConstraint implements
     public function __invoke($controller) {
         foreach($this->_children as $child) {
             $result = $child($controller);
-            if ($result->value === true) {
-                throw new TemplateConditionException();
+            if ($result->value === false) {
+                throw new TemplateConstraintException();
             }
         }
     }

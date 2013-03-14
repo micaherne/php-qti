@@ -63,7 +63,7 @@ class XMLUtils {
                             }
                             $namespace = $attributeNode->lookupNamespaceURI($prefix);
                             if ($assumeQTI21namespace || $namespace == XMLUtils::NAMESPACE_QTI21_FINAL) {
-                            if (property_exists($classname, $nodeName)) {
+                                if (property_exists($classname, $nodeName)) {
                                     $result->$nodeName = $attributeNode->nodeValue;
                                 } else {
                                     //echo "Unknown property $nodeName\n";
