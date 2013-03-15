@@ -482,12 +482,12 @@ class VariableTest extends PHPUnit_Framework_TestCase {
 
     public function testMathConstant() {
         $result1 = QTIVariable::mathConstant('pi');
-        $this->assertLessThan(3.15, $result1);
-        $this->assertGreaterThan(3.13, $result1);
+        $this->assertLessThan(3.15, $result1->value);
+        $this->assertGreaterThan(3.13, $result1->value);
         
         $result2 = QTIVariable::mathConstant('e');
-        $this->assertLessThan(2.72, $result2);
-        $this->assertGreaterThan(2.70, $result2);
+        $this->assertLessThan(2.72, $result2->value);
+        $this->assertGreaterThan(2.70, $result2->value);
     }
     
     public function testMathOperator() {

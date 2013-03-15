@@ -13,9 +13,8 @@ class RandomInteger extends \PHPQTI\Model\Gen\RandomInteger implements Expressio
         $min = $controller->valueOrVariable($this->min);
         $max = $controller->valueOrVariable($this->max);
         $step = isset($this->step) ? $controller->valueOrVariable($this->step) : 1;
-    
-        $offsetmax = intval($max/$step);
-        $value = $min + mt_rand(0, $offsetmax - $min);
+        $offsetmax = intval(($max - $min)/$step);
+        $value = $min + (mt_rand(0, $offsetmax) * $step);
         return new QTIVariable('single', 'integer', array(
                 'value' => $value
         ));

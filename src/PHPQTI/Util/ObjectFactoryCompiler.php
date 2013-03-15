@@ -66,31 +66,39 @@ class ObjectFactoryCompiler {
         * a bit, but it's not necessarily the case.
         */
         if (strpos($node->nodeName, ':') === false) {
-            $methodName = $node->nodeName;
+            $prefix = null; // must be null for lookupNamespaceURI
+            $name = $node->nodeName;
         } else {
             list($prefix, $name) = explode(':', $node->nodeName, 2);
-            $nodeNamespace = $node->lookupNamespaceURI($prefix);
-            switch ($nodeNamespace) {
-                case 'http://www.imsglobal.org/xsd/imsqti_v2p1':
-                    $methodName = $name;
-                    break;
-                case 'http://www.w3.org/1998/Math/MathML':
-                    // as soon as we hit the MathML namespace, just create a MathML object
-                    $methodName = '__mathml';
-                    $result = $varname . '->' . $methodName . '(\'';
-                    $xml = '<m:math xmlns="http://www.w3.org/1998/Math/MathML">';
-                    foreach($node->childNodes as $node) {
-                        $xml .= $node->ownerDocument->saveXML($node);
-                    }
-                    $xml .= "</m:math>";
-                    $result .= str_replace("'", "\\'", $xml);
-                    $result .= '\')';
-                    return $result;
-                    // $methodName = '__mathml_' . $name;
-                    break;
-                default:
-                    throw new Exception('Unsupported XML namespace: ' . $nodeNamespace);
-            }
+        }
+        
+        $nodeNamespace = $node->lookupNamespaceURI($prefix);
+        switch ($nodeNamespace) {
+            case 'http://www.imsglobal.org/xsd/imsqti_v2p1':
+                $methodName = $name;
+                break;
+            case 'http://www.w3.org/1998/Math/MathML':
+                // as soon as we hit the MathML namespace, just create a MathML object
+                $methodName = '__mathml';
+                $result = $varname . '->' . $methodName . '(\'';
+                
+                // We need to bind the prefix (if there is one) to the correct namespace
+                // as we're going to output the XML as text
+                list($prefix, $name) = explode(':', $node->nodeName, 2);
+                if (is_null($name)) {
+                    $node->setAttribute('xmlns', 'http://www.w3.org/1998/Math/MathML');
+                } else {
+                    $node->setAttribute('xmlns:' . $prefix, 'http://www.w3.org/1998/Math/MathML');
+                }
+                $xml = $node->ownerDocument->saveXML($node);
+                
+                $result .= str_replace("'", "\\'", $xml);
+                $result .= '\')';
+                return $result;
+                // $methodName = '__mathml_' . $name;
+                break;
+            default:
+                throw new Exception('Unsupported XML namespace: ' . $nodeNamespace);
         }
     
         $result = $varname . '->' . $methodName . '(';
