@@ -84,12 +84,12 @@ class ObjectFactoryCompiler {
                 
                 // We need to bind the prefix (if there is one) to the correct namespace
                 // as we're going to output the XML as text
-               /*  list($prefix, $name) = explode(':', $node->nodeName, 2);
+                list($prefix, $name) = explode(':', $node->nodeName, 2);
                 if (is_null($name)) {
                     $node->setAttribute('xmlns', 'http://www.w3.org/1998/Math/MathML');
                 } else {
                     $node->setAttribute('xmlns:' . $prefix, 'http://www.w3.org/1998/Math/MathML');
-                } */
+                }
                 $xml = $node->ownerDocument->saveXML($node);
                 
                 $result .= str_replace("'", "\\'", $xml);
