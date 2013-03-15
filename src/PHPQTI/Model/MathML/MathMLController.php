@@ -37,8 +37,12 @@ class MathMLController extends AbstractClass {
             }
         }
         
-        return $this->dom->saveXML();
+        $result = $this->dom->saveXML($this->dom->documentElement);
         
+        // Since we're outputting HTML5, we have to strip the prefixes, or MathJax
+        // won't deal with it. See http://docs.mathjax.org/en/v1.1-latest/start.html#mathml-input
+        // TODO: This is not particularly sound - we need to match any valid prefix
+        return preg_replace('%<(/?)\w+:%', '<$1', $result);
         
     }
 }
