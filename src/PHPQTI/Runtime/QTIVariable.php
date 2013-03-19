@@ -354,23 +354,6 @@ class QTIVariable {
 
     /*
      * Response processing functions.
-    *
-    * There is a distinction between the notion of a variable and an expression.
-    * In theory, most of these functions apply to expressions in the spec. However,
-    * in this implementation expressions are translated into closures / classes which,
-    * when invoked, produce a variable as a result, so it makes a certain amount
-    * of sense to implement these functions in the QTIVariable class.
-    *
-    * In other words, these functions should not be thought of as directly related to the
-    * expressions with the same name in the spec. The closures and classes produced by
-    * Response_processing are the implementation of expressions, which just happen to
-    * use these functions to do their work.
-    *
-    * Update: today I'm thinking that the closures and classes used in response processors
-    * should really be thought of as "expression processing functions" rather than expressions
-    * per se. So the following methods are "operator helper methods" and will be used when
-    * creating the expression processors. As I understand it, an expression always evaluates to a variable
-    * (i.e. when the processing function is executed)
     */
 
     // TODO: Should we implement Built-in General Expressions here? At the moment
