@@ -260,6 +260,10 @@ class QTIVariable {
     
     public static function max() {
         $vars = func_get_args();
+        // Allow a single array as well as a parameter list
+        if (count($vars) == 1 && is_array($vars[0])) {
+            $vars = $vars[0];
+        }
         $result = new QTIVariable('single', 'float');
         $vals = array();
         $allIntegers = true;
@@ -293,10 +297,17 @@ class QTIVariable {
 
     public static function min() {
         $vars = func_get_args();
+        // Allow a single array as well as a parameter list
+        if (count($vars) == 1 && is_array($vars[0])) {
+            $vars = $vars[0];
+        }
         $result = new QTIVariable('single', 'float');
         $vals = array();
         $allIntegers = true;
         foreach($vars as $var) {
+            if (!is_object($var)) {
+                print_r($var); die(" not an object\n");
+            }
             if ($var->_isNull()) {
                 return $result;
             }
