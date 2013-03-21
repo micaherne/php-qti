@@ -634,6 +634,12 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(9, $result1->value[2]);
         $this->assertEquals(12, $result1->value[3]);
     }
+    
+    public function testStatsOperator() {
+        $var1 = new QTIVariable('single', 'integer', array('value' => array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)));
+        $result1 = QTIVariable::statsOperator('mean', $var1);
+        $this->assertEquals(5.5, $result1->value);
+    }
 }
 
 

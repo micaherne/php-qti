@@ -258,6 +258,35 @@ class QTIVariable {
         return $result;
     }
     
+    /**
+     * Returns the result of a mathematical operation
+     *
+     * The first parameter is the name of the operation, and any further
+     * parameters are the variables to be acted on.
+     *
+     * TODO: This is a very naive interpretation at the moment.
+     */
+    public static function statsOperator($name, $param) {
+        $result = new QTIVariable('single', 'float');
+        if ($param->_isNull()) {
+            return $result;
+        }
+        
+        if (!is_array($param->value)) {
+            return $result;
+        }
+    
+        switch($name) {
+            case 'mean':
+                $result->value = array_sum($param->value) / count($param->value);
+                break;
+            default:
+                throw new NotImplementedException('statsOperator:' . $name);
+        }
+    
+        return $result;
+    }
+    
     public static function max() {
         $vars = func_get_args();
         // Allow a single array as well as a parameter list
