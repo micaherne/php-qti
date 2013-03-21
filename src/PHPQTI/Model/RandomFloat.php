@@ -3,6 +3,7 @@
 namespace PHPQTI\Model;
  
 use PHPQTI\Model\Base\Expression;
+use PHPQTI\Runtime\QTIVariable;
 
 class RandomFloat extends \PHPQTI\Model\Gen\RandomFloat implements Expression {
 
