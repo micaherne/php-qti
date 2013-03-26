@@ -264,7 +264,6 @@ class QTIVariable {
      * The first parameter is the name of the operation, and any further
      * parameters are the variables to be acted on.
      *
-     * TODO: This is a very naive interpretation at the moment.
      */
     public static function statsOperator($name, $param) {
         $result = new QTIVariable('single', 'float');
