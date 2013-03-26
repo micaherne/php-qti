@@ -281,26 +281,31 @@ class QTIVariable {
             $result->value = $mean;
         } else {
             $variance = 0;
-            foreach($param->value as $val) {
-                $variance += (($val - $mean) * ($val - $mean));
-            }
-            $divisor = 1;
-            if ($name == 'popSD' || $name == 'popVariance') {
-                $divisor = count($param->value);
-            } else if ($name == 'sampleSD' || $name == 'sampleVariance') {
-                $divisor = count($param->value) - 1;
-            } else {
-                throw new Exception ("Invalid statsOperator name $name");
-            }
             
-            $variance /= $divisor;
-            
-            if ($name == 'sampleVariance' || $name == 'popVariance') {
-                $result->value = $variance;
-            } else if ($name == 'sampleSD' || $name == 'popSD') {
-                $result->value = sqrt($variance);
+            if (is_array($param->value)) {
+                foreach($param->value as $val) {
+                    $variance += (($val - $mean) * ($val - $mean));
+                }
+                $divisor = 1;
+                if ($name == 'popSD' || $name == 'popVariance') {
+                    $divisor = count($param->value);
+                } else if ($name == 'sampleSD' || $name == 'sampleVariance') {
+                    $divisor = count($param->value) - 1;
+                } else {
+                    throw new Exception ("Invalid statsOperator name $name");
+                }
+                
+                $variance /= $divisor;
+                
+                if ($name == 'sampleVariance' || $name == 'popVariance') {
+                    $result->value = $variance;
+                } else if ($name == 'sampleSD' || $name == 'popSD') {
+                    $result->value = sqrt($variance);
+                } else {
+                    throw new Exception ("Invalid statsOperator name $name");
+                }
             } else {
-                throw new Exception ("Invalid statsOperator name $name");
+                $result->value = 0; // no variance for a single value
             }
         }
     
@@ -517,35 +522,6 @@ class QTIVariable {
     	 
     	$result->value = $lcm;
     	return $result;
-    }
-    
-    /**
-     * Repeat the contents of the variables a given number of times
-     */
-    public static function repeat($numberRepeats, $variables) {
-        if (count($variables) == 0) {
-            // The text of the spec appears to allow this, but what do we return??
-            throw new NotImplementedException("repeat for empty variable list");
-        }
-        $first = $variables[0];
-        $result = new QTIVariable($first->cardinality, $first->type);
-        $repeatingSet = array();
-        foreach($variables as $var) {
-            if (!isset($var->value) || is_null($var->value)) {
-                continue;
-            }
-            if (is_array($var->value)) {
-                $repeatingSet = array_merge($var->value);
-            } else {
-                $repeatingSet[] = $var->value;
-            }
-        }
-        $result->value = array();
-        for($i = 0; $i < $numberRepeats; $i++) {
-            $result->value = array_merge($result->value, $repeatingSet);
-        }
-        
-        return $result;
     }
     
     public static function multiple() {
