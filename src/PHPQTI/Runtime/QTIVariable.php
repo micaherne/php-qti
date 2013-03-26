@@ -275,13 +275,34 @@ class QTIVariable {
         if (!is_array($param->value)) {
             return $result;
         }
-    
-        switch($name) {
-            case 'mean':
-                $result->value = array_sum($param->value) / count($param->value);
-                break;
-            default:
-                throw new NotImplementedException('statsOperator:' . $name);
+        
+        $mean = array_sum($param->value) / count($param->value);
+        
+        if ($name == 'mean') {
+            $result->value = $mean;
+        } else {
+            $variance = 0;
+            foreach($param->value as $val) {
+                $variance += (($val - $mean) * ($val - $mean));
+            }
+            $divisor = 1;
+            if ($name == 'popSD' || $name == 'popVariance') {
+                $divisor = count($param->value);
+            } else if ($name == 'sampleSD' || $name == 'sampleVariance') {
+                $divisor = count($param->value) - 1;
+            } else {
+                throw new Exception ("Invalid statsOperator name $name");
+            }
+            
+            $variance /= $divisor;
+            
+            if ($name == 'sampleVariance' || $name == 'popVariance') {
+                $result->value = $variance;
+            } else if ($name == 'sampleSD' || $name == 'popSD') {
+                $result->value = sqrt($variance);
+            } else {
+                throw new Exception ("Invalid statsOperator name $name");
+            }
         }
     
         return $result;

@@ -639,6 +639,14 @@ class VariableTest extends PHPUnit_Framework_TestCase {
         $var1 = new QTIVariable('single', 'integer', array('value' => array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)));
         $result1 = QTIVariable::statsOperator('mean', $var1);
         $this->assertEquals(5.5, $result1->value);
+        $result2 = QTIVariable::statsOperator('popSD', $var1);
+        $this->assertEquals(2.87228132327, $result2->value);
+        $result3 = QTIVariable::statsOperator('popVariance', $var1);
+        $this->assertEquals(8.25, $result3->value);
+        $result4 = QTIVariable::statsOperator('sampleSD', $var1);
+        $this->assertEquals(3.0276503541, $result4->value);
+        $result5 = QTIVariable::statsOperator('sampleVariance', $var1);
+        $this->assertEquals(9.16666666667, $result5->value);
     }
 }
 
