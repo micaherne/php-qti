@@ -33,7 +33,6 @@
 				if (!maxChoices > 0) {
 					return;
 				}
-				console.log(maxChoices);
 				var choices = $(self.element).find('.qti_simpleChoice input:checkbox:checked');
 				if(choices.length >= maxChoices){
 					$(self.element).find('.qti_simpleChoice input:checkbox:not(:checked)').attr('disabled', true);
