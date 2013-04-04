@@ -17,6 +17,10 @@ class PrintedVariable extends \PHPQTI\Model\Gen\PrintedVariable implements BodyE
 
     public function __invoke($controller) {
         $variable = $controller->template[$this->identifier];
-        return implode(', ', $variable->value);
+        if (is_array($variable->value)) {
+        	return implode(', ', $variable->value);
+        } else {
+        	return $variable->value;
+        }
     }
 }
