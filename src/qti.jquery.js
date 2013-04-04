@@ -23,16 +23,17 @@
 		_create: function() {
 			var self = this;
 			
-			var maxChoices = $(self.element).data('maxchoices');
-			maxChoices = maxChoices ? maxChoices : 1;
+			var maxChoices = Number($(self.element).data('maxchoices'));
+			maxChoices = isNaN(maxChoices) ? 1 : maxChoices;
 			
-			var minChoices = $(self.element).data('minchoices');
-			minChoices = minChoices ? minChoices : 0;
+			var minChoices = Number($(self.element).data('minchoices'));
+			minChoices = isNaN(minChoices) ? 0 : minChoices;
 			
 			$(self.element).on('change', '.qti_simpleChoice input:checkbox', function(el) {
 				if (!maxChoices > 0) {
 					return;
 				}
+				console.log(maxChoices);
 				var choices = $(self.element).find('.qti_simpleChoice input:checkbox:checked');
 				if(choices.length >= maxChoices){
 					$(self.element).find('.qti_simpleChoice input:checkbox:not(:checked)').attr('disabled', true);
@@ -66,10 +67,10 @@
 			
 			self.varname = self.element.attr('id').replace(/^selectPointInteraction_/, '');
 
-			var maxChoices = $(self.element).data('maxchoices');
-			maxChoices = maxChoices ? maxChoices : 1;
+			var maxChoices = Number($(self.element).data('maxchoices'));
+			maxChoices = isNaN(maxChoices) ? 1 : maxChoices;
 			var minChoices = $(self.element).data('minchoices');
-			minChoices = minChoices ? minChoices : 0;
+			minChoices = isNaN(minChoices) ? 0 : minChoices;
 
 			var input = $(self.element).find('input:hidden');
 			var currentValues = [];
