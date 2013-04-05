@@ -229,6 +229,7 @@ class QTIVariable {
      * parameters are the variables to be acted on.
      * 
      * TODO: This is a very naive interpretation at the moment.
+     * TODO: Need to check for NaN
      */
     public static function mathOperator($name, $params) {
         $result = new QTIVariable('single', 'float');
@@ -248,9 +249,75 @@ class QTIVariable {
             case 'tan':
                 $result->value = tan($params[0]->getValue());
                 break;
+            case 'sec':
+            	throw new NotImplementedException('mathOperator:' . $name);
+            case 'csc':
+            	throw new NotImplementedException('mathOperator:' . $name);
+            case 'cot':
+            	throw new NotImplementedException('mathOperator:' . $name);
+            case 'asin':
+            	throw new NotImplementedException('mathOperator:' . $name);
+            case 'acos':
+            	throw new NotImplementedException('mathOperator:' . $name);
+            case 'atan':
+            	$result->value = atan($params[0]->getValue());
+                break;
+            case 'atan2':
+            	$result->value = atan2($params[0]->getValue());
+                break;
+            case 'asec':
+            	throw new NotImplementedException('mathOperator:' . $name);
+            case 'acsc':
+            	throw new NotImplementedException('mathOperator:' . $name);
+            case 'acot':
+            	throw new NotImplementedException('mathOperator:' . $name);
+            case 'sinh':
+            	$result->value = sinh($params[0]->getValue());
+                break;
+            case 'cosh':
+            	$result->value = cosh($params[0]->getValue());
+                break;
+            case 'tanh':
+            	$result->value = tanh($params[0]->getValue());
+                break;
+            case 'sech':
+            	throw new NotImplementedException('mathOperator:' . $name);
+            case 'csch':
+            	throw new NotImplementedException('mathOperator:' . $name);
+            case 'coth':
+            	throw new NotImplementedException('mathOperator:' . $name);
+            case 'log':
+            	$result->value = log10($params[0]->getValue());
+                break;
+            case 'ln':
+            	$result->value = log($params[0]->getValue());
+                break;
             case 'exp':
                 $result->value = exp($params[0]->getValue());
                 break;
+            case 'abs':
+            	$result->value = abs($params[0]->getValue());
+                break;
+            case 'signum':
+            	$v = $params[0]->getValue();
+            	if ($v > 0) {
+            		$result->value = 1;
+            	} else if ($v < 0) {
+            		$result->value = -1;
+            	} else {
+            		$result->value = 0;
+            	}
+                break;
+            case 'floor':
+            	$result->value = floor($params[0]->getValue());
+                break;
+            case 'ceil':
+            	$result->value = ceil($params[0]->getValue());
+                break;
+            case 'toDegrees':
+            	throw new NotImplementedException('mathOperator:' . $name);
+            case 'toRadians':
+            	throw new NotImplementedException('mathOperator:' . $name);
             default:
                 throw new NotImplementedException('mathOperator:' . $name);
         }
