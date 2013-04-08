@@ -315,9 +315,9 @@ class QTIVariable {
             	$result->value = ceil($params[0]->getValue());
                 break;
             case 'toDegrees':
-            	throw new NotImplementedException('mathOperator:' . $name);
+            	$result->value = rad2deg($params[0]->getValue());
             case 'toRadians':
-            	throw new NotImplementedException('mathOperator:' . $name);
+            	$result->value = deg2rad($params[0]->getValue());
             default:
                 throw new NotImplementedException('mathOperator:' . $name);
         }
