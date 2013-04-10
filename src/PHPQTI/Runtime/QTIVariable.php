@@ -254,11 +254,13 @@ class QTIVariable {
             	if ($cos != 0) {
             		$result->value = 1 / $cos;
             	}
+            	break;
             case 'csc':
                 $sin = sin($params[0]->getValue());
             	if ($sin != 0) {
             		$result->value = 1 / $sin;
             	}
+            	break;
             case 'cot':
             	$tan = tan($params[0]->getValue());
             	if (is_infinite($tan)) {
@@ -266,14 +268,18 @@ class QTIVariable {
             	} else if ($tan != 0) {
             		$result->value = 1 / $tan;
             	}
+            	break;
             case 'asin':
-            	throw new NotImplementedException('mathOperator:' . $name);
+            	$result->value = asin($params[0]->getValue());
+            	break;
             case 'acos':
-            	throw new NotImplementedException('mathOperator:' . $name);
+            	$result->value = acos($params[0]->getValue());
+            	break;
             case 'atan':
             	$result->value = atan($params[0]->getValue());
                 break;
             case 'atan2':
+            	// TODO: There's a whole list of rules in the spec - does the PHP function agree?
             	$result->value = atan2($params[0]->getValue());
                 break;
             case 'asec':
@@ -292,11 +298,23 @@ class QTIVariable {
             	$result->value = tanh($params[0]->getValue());
                 break;
             case 'sech':
-            	throw new NotImplementedException('mathOperator:' . $name);
+        		$cosh = cosh($params[0]->getValue());
+            	if ($cosh != 0) {
+            		$result->value = 1 / $cosh;
+            	}
+            	break;
             case 'csch':
-            	throw new NotImplementedException('mathOperator:' . $name);
+            	$sinh = sinh($params[0]->getValue());
+            	if ($sinh != 0) {
+            		$result->value = 1 / $sinh;
+            	}
+            	break;
             case 'coth':
-            	throw new NotImplementedException('mathOperator:' . $name);
+            	$tanh = tanh($params[0]->getValue());
+            	if ($tanh != 0) {
+            		$result->value = 1 / $tanh;
+            	}
+            	break;
             case 'log':
             	$result->value = log10($params[0]->getValue());
                 break;
@@ -327,8 +345,10 @@ class QTIVariable {
                 break;
             case 'toDegrees':
             	$result->value = rad2deg($params[0]->getValue());
+            	break;
             case 'toRadians':
             	$result->value = deg2rad($params[0]->getValue());
+            	break;
             default:
                 throw new NotImplementedException('mathOperator:' . $name);
         }
