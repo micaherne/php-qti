@@ -250,11 +250,22 @@ class QTIVariable {
                 $result->value = tan($params[0]->getValue());
                 break;
             case 'sec':
-            	throw new NotImplementedException('mathOperator:' . $name);
+            	$cos = cos($params[0]->getValue());
+            	if ($cos != 0) {
+            		$result->value = 1 / $cos;
+            	}
             case 'csc':
-            	throw new NotImplementedException('mathOperator:' . $name);
+                $sin = sin($params[0]->getValue());
+            	if ($sin != 0) {
+            		$result->value = 1 / $sin;
+            	}
             case 'cot':
-            	throw new NotImplementedException('mathOperator:' . $name);
+            	$tan = tan($params[0]->getValue());
+            	if (is_infinite($tan)) {
+            		$result->value = 0;
+            	} else if ($tan != 0) {
+            		$result->value = 1 / $tan;
+            	}
             case 'asin':
             	throw new NotImplementedException('mathOperator:' . $name);
             case 'acos':
