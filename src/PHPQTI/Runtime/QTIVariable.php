@@ -237,6 +237,9 @@ class QTIVariable {
             if ($var->_isNull()) {
                 return $result;
             }
+            if (!is_numeric($var->value)) {
+            	return $result;
+            }
         }
         
         switch($name) {
@@ -280,14 +283,32 @@ class QTIVariable {
                 break;
             case 'atan2':
             	// TODO: There's a whole list of rules in the spec - does the PHP function agree?
-            	$result->value = atan2($params[0]->getValue());
+            	$result->value = atan2($params[0]->getValue(), $params[1]->getValue());
                 break;
             case 'asec':
-            	throw new NotImplementedException('mathOperator:' . $name);
+        		$acos = acos($params[0]->getValue());
+            	if (is_infinite($acos)) {
+            		$result->value = 0;
+            	} else if ($acos != 0) {
+            		$result->value = 1 / $acos;
+            	}
+                break;
             case 'acsc':
-            	throw new NotImplementedException('mathOperator:' . $name);
+        		$asin = asin($params[0]->getValue());
+            	if (is_infinite($asin)) {
+            		$result->value = 0;
+            	} else if ($asin != 0) {
+            		$result->value = 1 / $asin;
+            	}
+            	break;
             case 'acot':
-            	throw new NotImplementedException('mathOperator:' . $name);
+            	$atan = atan($params[0]->getValue());
+            	if (is_infinite($atan)) {
+            		$result->value = 0;
+            	} else if ($atan != 0) {
+            		$result->value = 1 / $atan;
+            	}
+            	break;
             case 'sinh':
             	$result->value = sinh($params[0]->getValue());
                 break;
