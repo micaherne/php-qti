@@ -23,6 +23,7 @@ class QTIVariable {
     public $paramVariable = false;
     public $mathVariable = false;
     public $mapping = null;
+    public $declaration = null; // the original declaration
 
     /**
      * Create a qti variable
@@ -64,6 +65,10 @@ class QTIVariable {
 
     public static function fromDeclaration($declaration) {
         $result = new QTIVariable($declaration->cardinality, $declaration->baseType);
+        
+        // We pass the declaration to the variable to make the attributes available if needed
+        $result->declaration = $declaration;
+        
         if (isset($declaration->paramVariable) && $declaration->paramVariable == 'true') {
             $result->paramVariable = true;
         }
@@ -1219,13 +1224,26 @@ class QTIVariable {
         return $result;
     }
 
-    // TODO: Implement these functions
-    public function durationLT() {
-        throw new \Exception("Not implemented");
+    public function durationLT(QTIVariable $duration1, QTIVariable $duration2) {
+    	$result = new QTIVariable('single', 'boolean');
+        if ($duration1->_isNull() || $duration2->_isNull()) {
+        	return $result;
+        }
+        
+        $result->value = ($duration1->value < $duration2->value);
+        
+        return $result;
     }
 
     public function durationGTE() {
-        throw new \Exception("Not implemented");
+        $result = new QTIVariable('single', 'boolean');
+        if ($duration1->_isNull() || $duration2->_isNull()) {
+        	return $result;
+        }
+        
+        $result->value = ($duration1->value >= $duration2->value);
+        
+        return $result;
     }
 
     public static function sum() {
