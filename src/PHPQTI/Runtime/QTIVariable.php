@@ -7,6 +7,7 @@ use PHPQTI\Model\Mapping;
 
 use PHPQTI\Runtime\Exception\ProcessingException;
 use PHPQTI\Runtime\Exception\NotImplementedException;
+use PHPQTI\Model\Base\LookupTable;
 
 class QTIVariable {
 
@@ -61,6 +62,8 @@ class QTIVariable {
             $this->areaMapping = $params['areaMapping'];
         }
         
+        $this->lookupTable = null;
+        
     }
 
     public static function fromDeclaration($declaration) {
@@ -107,6 +110,8 @@ class QTIVariable {
                     $result->mapping = $child(null);
                 } else if ($child instanceof AreaMapping) {
                     $result->areaMapping = $child(null);
+                } else if ($child instanceof LookupTable) {
+                	$result->lookupTable = $child(null);
                 }
             }
         }
