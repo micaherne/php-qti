@@ -623,16 +623,18 @@ class VariableTest extends PHPUnit_Framework_TestCase {
     	$this->assertEquals(0, QTIVariable::lcm($variable7, $variable7, $variable7, $variable7)->value);
     }
     
-    public function testRepeat() {
-        // Simple integers
-        $variable1 = new QTIVariable('single', 'integer', array('value' => 9));
-        $variable2 = new QTIVariable('single', 'integer', array('value' => 12));
-        $result1 = QTIVariable::repeat(2, array($variable1, $variable2));
-        $this->assertEquals(4, count($result1->value));
-        $this->assertEquals(9, $result1->value[0]);
-        $this->assertEquals(12, $result1->value[1]);
-        $this->assertEquals(9, $result1->value[2]);
-        $this->assertEquals(12, $result1->value[3]);
+    public function testStatsOperator() {
+        $var1 = new QTIVariable('single', 'integer', array('value' => array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)));
+        $result1 = QTIVariable::statsOperator('mean', $var1);
+        $this->assertEquals(5.5, $result1->value);
+        $result2 = QTIVariable::statsOperator('popSD', $var1);
+        $this->assertEquals(2.87228132327, $result2->value);
+        $result3 = QTIVariable::statsOperator('popVariance', $var1);
+        $this->assertEquals(8.25, $result3->value);
+        $result4 = QTIVariable::statsOperator('sampleSD', $var1);
+        $this->assertEquals(3.0276503541, $result4->value);
+        $result5 = QTIVariable::statsOperator('sampleVariance', $var1);
+        $this->assertEquals(9.16666666667, $result5->value);
     }
 }
 

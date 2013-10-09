@@ -12,9 +12,21 @@ class Repeat extends \PHPQTI\Model\Gen\Repeat implements Expression {
     public function __invoke($controller) {
         $numberRepeats = $controller->valueOrVariable($this->numberRepeats);
         $vars = array();
-        foreach($this->_children as $child) {
-            $vars[] = $child($controller);
+        
+        // We need to actually evaluate the expression multiple times, not just repeat the result
+        for ($i = 0; $i < $numberRepeats; $i++) {
+            foreach($this->_children as $child) {
+                $vars[] = $child($controller);
+            }
         }
-        return QTIVariable::repeat($numberRepeats, $vars);
+        
+        $value = array();
+        foreach($vars as $var) {
+            $value[] = $var->value;
+        }
+        
+        $result = new QTIVariable('ordered', $vars[0]->type, array('value' => $value));
+
+        return $result;
     }
 }

@@ -117,6 +117,24 @@ class ModelTest extends PHPUnit_Framework_TestCase {
         $result1 = $mapping($controller);
         $this->assertCount(3, $result1->getChildren('PHPQTI\Model\MapEntry'));
     }
+
+    public function testMax() {
+        $max = $this->fromXmlFragment('<max><variable identifier="t"/></max>');
+        $item = new AssessmentItem();
+        $controller = new AssessmentItemController($item);
+        $controller->template['t'] = new QTIVariable('ordered', 'integer', array('value' => array(2, 4, 6, 8)));
+        $result1 = $max($controller);
+        $this->assertEquals(8, $result1->value);
+    }
+    
+    public function testMin() {
+        $min = $this->fromXmlFragment('<min><variable identifier="t"/></min>');
+        $item = new AssessmentItem();
+        $controller = new AssessmentItemController($item);
+        $controller->template['t'] = new QTIVariable('ordered', 'integer', array('value' => array(2, 4, 6, 8)));
+        $result1 = $min($controller);
+        $this->assertEquals(2, $result1->value);
+    }
     
     public function testNot() {
         $not = $this->fromXmlFragment('<not><baseValue baseType="boolean">true</baseValue></not>');
@@ -186,12 +204,18 @@ class ModelTest extends PHPUnit_Framework_TestCase {
     }
     
     public function testVariable() {
-        $value = $this->fromXmlFragment('<variable identifier="RESPONSE"/>');
+        $variable = $this->fromXmlFragment('<variable identifier="RESPONSE"/>');
         
         $controller = new AssessmentItemController();
         $controller->response['RESPONSE'] = new QTIVariable('single', 'identifier', array('value' => 'testval'));
-        $result = $value($controller);
+        $result = $variable($controller);
         $this->assertEquals('testval', $result->value);
+        
+        // template variable
+        $variable = $this->fromXmlFragment('<variable identifier="t"/>');
+        $controller->template['t'] = new QTIVariable('ordered', 'integer', array('value' => array(2, 4, 6)));
+        $result2 = $variable($controller);
+        $this->assertEquals(4, $result2->value[1]);
     }
     
 }

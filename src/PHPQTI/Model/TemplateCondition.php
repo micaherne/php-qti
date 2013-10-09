@@ -12,7 +12,7 @@ class TemplateCondition extends \PHPQTI\Model\Gen\TemplateCondition
     public function __invoke($controller) {
         foreach($this->_children as $child) {
             $result = $child($controller);
-            if ($result->value === true) {
+            if (isset($result->value) && $result->value === true) {
                 return;
             }
         }

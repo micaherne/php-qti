@@ -22,14 +22,14 @@ class MathMLController extends AbstractClass {
             if ($var->mathVariable) {
                 $mi = $this->dom->getElementsByTagNameNS('http://www.w3.org/1998/Math/MathML', 'mi');
                 foreach($mi as $identifierNode) {
-                    if ($identifierNode->nodeValue == $name) {
+                    if (trim($identifierNode->nodeValue) == $name) {
                         $mn = $this->dom->createElementNS('http://www.w3.org/1998/Math/MathML', 'mn', $var->value);
                         $identifierNode->parentNode->replaceChild($mn, $identifierNode);
                     }
                 }
                 $ci = $this->dom->getElementsByTagNameNS('http://www.w3.org/1998/Math/MathML', 'ci');
                 foreach($ci as $identifierNode) {
-                    if ($identifierNode->nodeValue == $name) {
+                    if (trim($identifierNode->nodeValue) == $name) {
                         $mn = $this->dom->createElementNS('http://www.w3.org/1998/Math/MathML', 'cn', $var->value);
                         $identifierNode->parentNode->replaceChild($mn, $identifierNode);
                     }

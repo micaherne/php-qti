@@ -7,6 +7,7 @@ use PHPQTI\Model\Mapping;
 
 use PHPQTI\Runtime\Exception\ProcessingException;
 use PHPQTI\Runtime\Exception\NotImplementedException;
+use PHPQTI\Model\Base\LookupTable;
 
 class QTIVariable {
 
@@ -23,6 +24,7 @@ class QTIVariable {
     public $paramVariable = false;
     public $mathVariable = false;
     public $mapping = null;
+    public $declaration = null; // the original declaration
 
     /**
      * Create a qti variable
@@ -60,10 +62,16 @@ class QTIVariable {
             $this->areaMapping = $params['areaMapping'];
         }
         
+        $this->lookupTable = null;
+        
     }
 
     public static function fromDeclaration($declaration) {
         $result = new QTIVariable($declaration->cardinality, $declaration->baseType);
+        
+        // We pass the declaration to the variable to make the attributes available if needed
+        $result->declaration = $declaration;
+        
         if (isset($declaration->paramVariable) && $declaration->paramVariable == 'true') {
             $result->paramVariable = true;
         }
@@ -102,6 +110,8 @@ class QTIVariable {
                     $result->mapping = $child(null);
                 } else if ($child instanceof AreaMapping) {
                     $result->areaMapping = $child(null);
+                } else if ($child instanceof LookupTable) {
+                	$result->lookupTable = $child(null);
                 }
             }
         }
@@ -229,12 +239,16 @@ class QTIVariable {
      * parameters are the variables to be acted on.
      * 
      * TODO: This is a very naive interpretation at the moment.
+     * TODO: Need to check for NaN
      */
     public static function mathOperator($name, $params) {
         $result = new QTIVariable('single', 'float');
         foreach($params as $var) {
             if ($var->_isNull()) {
                 return $result;
+            }
+            if (!is_numeric($var->value)) {
+            	return $result;
             }
         }
         
@@ -248,9 +262,124 @@ class QTIVariable {
             case 'tan':
                 $result->value = tan($params[0]->getValue());
                 break;
+            case 'sec':
+            	$cos = cos($params[0]->getValue());
+            	if ($cos != 0) {
+            		$result->value = 1 / $cos;
+            	}
+            	break;
+            case 'csc':
+                $sin = sin($params[0]->getValue());
+            	if ($sin != 0) {
+            		$result->value = 1 / $sin;
+            	}
+            	break;
+            case 'cot':
+            	$tan = tan($params[0]->getValue());
+            	if (is_infinite($tan)) {
+            		$result->value = 0;
+            	} else if ($tan != 0) {
+            		$result->value = 1 / $tan;
+            	}
+            	break;
+            case 'asin':
+            	$result->value = asin($params[0]->getValue());
+            	break;
+            case 'acos':
+            	$result->value = acos($params[0]->getValue());
+            	break;
+            case 'atan':
+            	$result->value = atan($params[0]->getValue());
+                break;
+            case 'atan2':
+            	// TODO: There's a whole list of rules in the spec - does the PHP function agree?
+            	$result->value = atan2($params[0]->getValue(), $params[1]->getValue());
+                break;
+            case 'asec':
+        		$acos = acos($params[0]->getValue());
+            	if (is_infinite($acos)) {
+            		$result->value = 0;
+            	} else if ($acos != 0) {
+            		$result->value = 1 / $acos;
+            	}
+                break;
+            case 'acsc':
+        		$asin = asin($params[0]->getValue());
+            	if (is_infinite($asin)) {
+            		$result->value = 0;
+            	} else if ($asin != 0) {
+            		$result->value = 1 / $asin;
+            	}
+            	break;
+            case 'acot':
+            	$atan = atan($params[0]->getValue());
+            	if (is_infinite($atan)) {
+            		$result->value = 0;
+            	} else if ($atan != 0) {
+            		$result->value = 1 / $atan;
+            	}
+            	break;
+            case 'sinh':
+            	$result->value = sinh($params[0]->getValue());
+                break;
+            case 'cosh':
+            	$result->value = cosh($params[0]->getValue());
+                break;
+            case 'tanh':
+            	$result->value = tanh($params[0]->getValue());
+                break;
+            case 'sech':
+        		$cosh = cosh($params[0]->getValue());
+            	if ($cosh != 0) {
+            		$result->value = 1 / $cosh;
+            	}
+            	break;
+            case 'csch':
+            	$sinh = sinh($params[0]->getValue());
+            	if ($sinh != 0) {
+            		$result->value = 1 / $sinh;
+            	}
+            	break;
+            case 'coth':
+            	$tanh = tanh($params[0]->getValue());
+            	if ($tanh != 0) {
+            		$result->value = 1 / $tanh;
+            	}
+            	break;
+            case 'log':
+            	$result->value = log10($params[0]->getValue());
+                break;
+            case 'ln':
+            	$result->value = log($params[0]->getValue());
+                break;
             case 'exp':
                 $result->value = exp($params[0]->getValue());
                 break;
+            case 'abs':
+            	$result->value = abs($params[0]->getValue());
+                break;
+            case 'signum':
+            	$v = $params[0]->getValue();
+            	if ($v > 0) {
+            		$result->value = 1;
+            	} else if ($v < 0) {
+            		$result->value = -1;
+            	} else {
+            		$result->value = 0;
+            	}
+                break;
+            case 'floor':
+            	$result->value = floor($params[0]->getValue());
+                break;
+            case 'ceil':
+            	$result->value = ceil($params[0]->getValue());
+                break;
+            case 'toDegrees':
+            	$result->value = rad2deg($params[0]->getValue());
+            	break;
+            case 'toRadians':
+            	$result->value = deg2rad($params[0]->getValue());
+            	break;
             default:
                 throw new NotImplementedException('mathOperator:' . $name);
         }
@@ -258,8 +387,66 @@ class QTIVariable {
         return $result;
     }
     
+    /**
+     * Returns the result of a mathematical operation
+     *
+     * The first parameter is the name of the operation, and any further
+     * parameters are the variables to be acted on.
+     *
+     */
+    public static function statsOperator($name, $param) {
+        $result = new QTIVariable('single', 'float');
+        if ($param->_isNull()) {
+            return $result;
+        }
+        
+        if (!is_array($param->value)) {
+            return $result;
+        }
+        
+        $mean = array_sum($param->value) / count($param->value);
+        
+        if ($name == 'mean') {
+            $result->value = $mean;
+        } else {
+            $variance = 0;
+            
+            if (is_array($param->value)) {
+                foreach($param->value as $val) {
+                    $variance += (($val - $mean) * ($val - $mean));
+                }
+                $divisor = 1;
+                if ($name == 'popSD' || $name == 'popVariance') {
+                    $divisor = count($param->value);
+                } else if ($name == 'sampleSD' || $name == 'sampleVariance') {
+                    $divisor = count($param->value) - 1;
+                } else {
+                    throw new Exception ("Invalid statsOperator name $name");
+                }
+                
+                $variance /= $divisor;
+                
+                if ($name == 'sampleVariance' || $name == 'popVariance') {
+                    $result->value = $variance;
+                } else if ($name == 'sampleSD' || $name == 'popSD') {
+                    $result->value = sqrt($variance);
+                } else {
+                    throw new Exception ("Invalid statsOperator name $name");
+                }
+            } else {
+                $result->value = 0; // no variance for a single value
+            }
+        }
+    
+        return $result;
+    }
+    
     public static function max() {
         $vars = func_get_args();
+        // Allow a single array as well as a parameter list
+        if (count($vars) == 1 && is_array($vars[0])) {
+            $vars = $vars[0];
+        }
         $result = new QTIVariable('single', 'float');
         $vals = array();
         $allIntegers = true;
@@ -293,10 +480,17 @@ class QTIVariable {
 
     public static function min() {
         $vars = func_get_args();
+        // Allow a single array as well as a parameter list
+        if (count($vars) == 1 && is_array($vars[0])) {
+            $vars = $vars[0];
+        }
         $result = new QTIVariable('single', 'float');
         $vals = array();
         $allIntegers = true;
         foreach($vars as $var) {
+            if (!is_object($var)) {
+                print_r($var); die(" not an object\n");
+            }
             if ($var->_isNull()) {
                 return $result;
             }
@@ -354,23 +548,6 @@ class QTIVariable {
 
     /*
      * Response processing functions.
-    *
-    * There is a distinction between the notion of a variable and an expression.
-    * In theory, most of these functions apply to expressions in the spec. However,
-    * in this implementation expressions are translated into closures / classes which,
-    * when invoked, produce a variable as a result, so it makes a certain amount
-    * of sense to implement these functions in the QTIVariable class.
-    *
-    * In other words, these functions should not be thought of as directly related to the
-    * expressions with the same name in the spec. The closures and classes produced by
-    * Response_processing are the implementation of expressions, which just happen to
-    * use these functions to do their work.
-    *
-    * Update: today I'm thinking that the closures and classes used in response processors
-    * should really be thought of as "expression processing functions" rather than expressions
-    * per se. So the following methods are "operator helper methods" and will be used when
-    * creating the expression processors. As I understand it, an expression always evaluates to a variable
-    * (i.e. when the processing function is executed)
     */
 
     // TODO: Should we implement Built-in General Expressions here? At the moment
@@ -474,35 +651,6 @@ class QTIVariable {
     	 
     	$result->value = $lcm;
     	return $result;
-    }
-    
-    /**
-     * Repeat the contents of the variables a given number of times
-     */
-    public static function repeat($numberRepeats, $variables) {
-        if (count($variables) == 0) {
-            // The text of the spec appears to allow this, but what do we return??
-            throw new NotImplementedException("repeat for empty variable list");
-        }
-        $first = $variables[0];
-        $result = new QTIVariable($first->cardinality, $first->type);
-        $repeatingSet = array();
-        foreach($variables as $var) {
-            if (!isset($var->value) || is_null($var->value)) {
-                continue;
-            }
-            if (is_array($var->value)) {
-                $repeatingSet = array_merge($var->value);
-            } else {
-                $repeatingSet[] = $var->value;
-            }
-        }
-        $result->value = array();
-        for($i = 0; $i < $numberRepeats; $i++) {
-            $result->value = array_merge($result->value, $repeatingSet);
-        }
-        
-        return $result;
     }
     
     public static function multiple() {
@@ -1081,13 +1229,26 @@ class QTIVariable {
         return $result;
     }
 
-    // TODO: Implement these functions
-    public function durationLT() {
-        throw new \Exception("Not implemented");
+    public function durationLT(QTIVariable $duration1, QTIVariable $duration2) {
+    	$result = new QTIVariable('single', 'boolean');
+        if ($duration1->_isNull() || $duration2->_isNull()) {
+        	return $result;
+        }
+        
+        $result->value = ($duration1->value < $duration2->value);
+        
+        return $result;
     }
 
     public function durationGTE() {
-        throw new \Exception("Not implemented");
+        $result = new QTIVariable('single', 'boolean');
+        if ($duration1->_isNull() || $duration2->_isNull()) {
+        	return $result;
+        }
+        
+        $result->value = ($duration1->value >= $duration2->value);
+        
+        return $result;
     }
 
     public static function sum() {
